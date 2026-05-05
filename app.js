@@ -139,46 +139,85 @@ function renderDay(dayId) {
 
         <div class="section-card">
             <h3 class="section-title">Objetivo de la Sesión</h3>
-            <p style="line-height: 1.6; color: var(--text-secondary); font-size: 1.1rem;">${data.objective}</p>
-        </div>
-
-        <div class="section-card">
-            <h3 class="section-title">Lecciones del Día</h3>
-            ${data.lessons.map(lesson => `
-                <div class="lesson-item" style="margin-bottom: 2.5rem; border-left: 2px solid var(--glass-border); padding-left: 1.5rem;">
-                    <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem; font-size: 1.2rem;">${lesson.title}</h4>
-                    <p style="line-height: 1.7; color: var(--text-primary); margin-bottom: 1rem;">${lesson.content}</p>
-                    
-                    ${lesson.videoUrl ? `
-                        <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); max-width: ${lesson.videoUrl.includes('tiktok') ? '325px' : '100%'}; margin-left: auto; margin-right: auto;">
-                            <iframe width="100%" height="${lesson.videoUrl.includes('tiktok') ? '580' : '315'}" src="${lesson.videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    ` : ''}
-
-                    ${lesson.videoUrls ? lesson.videoUrls.map(url => `
-                        <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); max-width: ${url.includes('tiktok') ? '325px' : '100%'}; margin-left: auto; margin-right: auto;">
-                            <iframe width="100%" height="${url.includes('tiktok') ? '580' : '315'}" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    `).join('') : ''}
-
-                    ${lesson.imageUrl ? `
-                        <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-                            <img src="${lesson.imageUrl}" alt="${lesson.title}" style="width: 100%; display: block;">
-                        </div>
-                    ` : ''}
-
-                    <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem;">
-                        <span style="color: var(--accent-purple); font-weight: bold;">💡 Tip del Instructor:</span> 
-                        <span style="color: var(--text-secondary);">${lesson.tip}</span>
-                    </div>
+            <p style="line-height: 1.6; color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1.5rem;">${data.objective}</p>
+            ${data.mediaPlaceholder ? `
+                <div style="margin: 1rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                    ${data.mediaPlaceholder.type === 'video' ? `
+                        <iframe width="100%" height="315" src="${data.mediaPlaceholder.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    ` : `
+                        <img src="${data.mediaPlaceholder.url}" alt="${data.mediaPlaceholder.description}" style="width: 100%; display: block;">
+                    `}
+                    ${data.mediaPlaceholder.description ? `<p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; font-style: italic;">${data.mediaPlaceholder.description}</p>` : ''}
                 </div>
-            `).join('')}
+            ` : ''}
         </div>
 
-        <div class="section-card">
-            <h3 class="section-title">Actividad Práctica</h3>
-            <p style="line-height: 1.6; color: var(--text-secondary);">${data.practice}</p>
-        </div>
+        ${data.sections ? data.sections.map(section => `
+            <div class="section-card">
+                <h3 class="section-title">${section.title}</h3>
+                ${section.lessons.map(lesson => `
+                    <div class="lesson-item" style="margin-bottom: 2.5rem; border-left: 2px solid var(--glass-border); padding-left: 1.5rem;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem; font-size: 1.2rem;">${lesson.title}</h4>
+                        <p style="line-height: 1.7; color: var(--text-primary); margin-bottom: 1rem;">${lesson.content}</p>
+                        
+                        ${lesson.videoUrl ? `
+                            <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); max-width: ${lesson.videoUrl.includes('tiktok') ? '325px' : '100%'}; margin-left: auto; margin-right: auto;">
+                                <iframe width="100%" height="${lesson.videoUrl.includes('tiktok') ? '580' : '315'}" src="${lesson.videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen alt="${lesson.title}"></iframe>
+                            </div>
+                        ` : ''}
+
+                        ${lesson.imageUrl ? `
+                            <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                                <img src="${lesson.imageUrl}" alt="${lesson.title}" style="width: 100%; display: block;">
+                            </div>
+                        ` : ''}
+
+                        <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem;">
+                            <span style="color: var(--accent-purple); font-weight: bold;">💡 Tip del Instructor:</span> 
+                            <span style="color: var(--text-secondary);">${lesson.tip}</span>
+                        </div>
+                    </div>
+                `).join('')}
+                ${section.practice ? `
+                    <div style="margin-top: 2rem; padding: 1.5rem; border: 1px dashed var(--accent-purple); border-radius: 1rem; background: rgba(168, 85, 247, 0.05);">
+                        <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem; font-size: 1.1rem;">🛠️ Actividad Práctica</h4>
+                        <p style="line-height: 1.6; color: var(--text-secondary); font-size: 0.95rem;">${section.practice}</p>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('') : `
+            <div class="section-card">
+                <h3 class="section-title">Lecciones del Día</h3>
+                ${data.lessons.map(lesson => `
+                    <div class="lesson-item" style="margin-bottom: 2.5rem; border-left: 2px solid var(--glass-border); padding-left: 1.5rem;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 0.75rem; font-size: 1.2rem;">${lesson.title}</h4>
+                        <p style="line-height: 1.7; color: var(--text-primary); margin-bottom: 1rem;">${lesson.content}</p>
+                        
+                        ${lesson.videoUrl ? `
+                            <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); max-width: ${lesson.videoUrl.includes('tiktok') ? '325px' : '100%'}; margin-left: auto; margin-right: auto;">
+                                <iframe width="100%" height="${lesson.videoUrl.includes('tiktok') ? '580' : '315'}" src="${lesson.videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen alt="${lesson.title}"></iframe>
+                            </div>
+                        ` : ''}
+
+                        ${lesson.imageUrl ? `
+                            <div style="margin: 1.5rem 0; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                                <img src="${lesson.imageUrl}" alt="${lesson.title}" style="width: 100%; display: block;">
+                            </div>
+                        ` : ''}
+
+                        <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem;">
+                            <span style="color: var(--accent-purple); font-weight: bold;">💡 Tip del Instructor:</span> 
+                            <span style="color: var(--text-secondary);">${lesson.tip}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="section-card">
+                <h3 class="section-title">Actividad Práctica</h3>
+                <p style="line-height: 1.6; color: var(--text-secondary);">${data.practice}</p>
+            </div>
+        `}
 
         <div class="section-card quiz-container">
             <h3 class="section-title">Pon a prueba tu conocimiento</h3>
