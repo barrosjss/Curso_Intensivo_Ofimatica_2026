@@ -119,11 +119,6 @@ const courseData = [
       ],
       correct: 0,
     },
-    mediaPlaceholder: {
-      type: "video",
-      url: "https://www.youtube.com/embed/ded6y4dvYtc",
-      description: "Dominando la Tabla de Contenidos.",
-    },
   },
   {
     day: 3,
