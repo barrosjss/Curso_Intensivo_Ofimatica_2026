@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 7 — PowerPoint Ejecutivo | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#1a0a30 0%,#0a1030 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#0a1025}
+.slide.resumen{background:linear-gradient(135deg,#0a1025 0%,#1a0a30 100%)}
+h1.titulo{font-size:2.8em;color:#fff;margin-bottom:16px;line-height:1.2}
+h1.titulo span{color:#fb923c}
+.subtitulo{font-size:1.2em;color:#fdba74;margin-bottom:30px}
+h2{font-size:1.9em;color:#fb923c;margin-bottom:26px;border-bottom:2px solid #2a1a10;padding-bottom:10px}
+h3{font-size:1.3em;color:#fdba74;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#fb923c;color:#1a0800;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px}
+.box{background:#1a1020;border-radius:10px;padding:22px;border-left:4px solid #fb923c}
+.box.green{border-left-color:#1ab87a;background:#0a2a1a}
+.box.blue{border-left-color:#6fa8dc;background:#0a1a2a}
+.box.red{border-left-color:#e05050;background:#2a1010}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.callout{background:#1a0a10;border:1px solid #fb923c;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.green{background:#0a2a1a;border-color:#1ab87a}
+.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
+.callout.warn{background:#1a1a0a;border-color:#f0b429}
+.callout strong{color:#fb923c}
+.callout.green strong{color:#1ab87a}
+.callout.tip strong{color:#6fa8dc}
+.callout.warn strong{color:#f0b429}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#1ab87a;font-weight:700}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#fb923c;color:#1a0800;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+/* Slide mockups */
+.slide-mock{background:#f0f0f8;border-radius:8px;padding:16px;color:#1a1a2a;aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:center;max-height:140px}
+.slide-mock.dark{background:#1a2040}
+.slide-mock h4{font-size:0.9em;color:#1a1a2a;font-weight:700}
+.slide-mock.dark h4{color:#fff}
+.slide-mock p{font-size:0.75em;color:#4a4a5a;margin:0;line-height:1.4}
+.slide-mock.dark p{color:#a0b0c0}
+.slide-mock .title-line{width:60%;height:4px;background:#fb923c;margin-bottom:8px;border-radius:2px}
+.slide-mock .bullet{width:80%;height:2px;background:#ccc;margin:4px 0;border-radius:1px}
+.slide-mock .bullet.short{width:60%}
+.slide-mock .img-placeholder{background:#dde;border-radius:4px;height:50px;display:flex;align-items:center;justify-content:center;color:#99a;font-size:0.7em}
+/* Color swatches */
+.swatch-row{display:flex;gap:10px;margin:10px 0}
+.swatch{width:50px;height:50px;border-radius:8px;display:flex;align-items:flex-end;padding:4px;font-size:0.65em;color:#fff;font-weight:700}
+/* Hierarchy demo */
+.hier{padding:16px;background:#1a1020;border-radius:8px}
+.hier .h1{font-size:1.3em;color:#fff;font-weight:700;margin-bottom:6px}
+.hier .h2{font-size:1em;color:#fdba74;font-weight:600;margin-left:20px;margin-bottom:4px}
+.hier .h3{font-size:0.85em;color:#a0a8c0;margin-left:40px;margin-bottom:3px}
+.hier .body{font-size:0.8em;color:#708090;margin-left:60px}
+/* Rule of thirds */
+.thirds-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;background:#2a1a10;border-radius:6px;height:120px;padding:2px}
+.thirds-cell{background:#1a1020;border-radius:4px}
+.thirds-cell.highlight{background:#3a2020;border:1px solid #fb923c}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#2a1a10;color:#fdba74;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #1a1020;color:#c8d8e8}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#2a1a10}
+.progress-bar{height:100%;background:linear-gradient(90deg,#fb923c,#fbbf24);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#5a3a1a;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#5a3a1a;font-size:0.82em}
+</style>
+</head>
+<body>
+
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 7 DE 12</span>
+  <h1 class="titulo">Presentaciones<br><span>Ejecutivas Profesionales</span></h1>
+  <p class="subtitulo">Diseño · Jerarquía visual · Branding · Estructura · PowerPoint</p>
+  <p style="color:#4a2a1a;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Inicio Unidad 11.2.1</p>
+</div>
+
+<div class="slide tema">
+  <h2>¿Por qué importa saber presentar?</h2>
+  <div class="cols">
+    <div>
+      <p>En el mundo laboral, no basta con tener buena información — debes saber <strong style="color:#fb923c">comunicarla visualmente</strong> para que quien decide pueda actuar.</p>
+      <div class="callout">
+        <strong>Realidad empresarial:</strong> Un gerente toma decisiones en promedio viendo una diapositiva por 2-3 minutos. Si no entiende el mensaje en ese tiempo, pasa de largo.
+      </div>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>El error más común del auxiliar:</strong> Poner TODO el texto del informe escrito en las diapositivas. Las diapositivas son SOPORTE VISUAL, no el informe completo.
+      </div>
+    </div>
+    <div>
+      <h3>Contexto laboral colombiano:</h3>
+      <ul class="check-list">
+        <li>Empresas de Barranquilla usan PowerPoint para reuniones con clientes y directivos</li>
+        <li>Las licitaciones del sector público exigen presentaciones formales</li>
+        <li>Informes de gestión trimestral se presentan con slides</li>
+        <li>La digitalización exige presentar datos con gráficos, no tablas de texto</li>
+      </ul>
+      <div class="callout tip" style="margin-top:14px">
+        <strong>Empleabilidad:</strong> Saber hacer una presentación ejecutiva limpia te diferencia del 70% de candidatos que solo saben "abrir PowerPoint".
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Estructura de una Presentación Ejecutiva</h2>
+  <div class="cols">
+    <div>
+      <h3>La estructura SCQA:</h3>
+      <div class="num-list">
+        <ul>
+          <li><strong>Situación</strong> — Contexto actual. ¿Dónde estamos? (1-2 slides)</li>
+          <li><strong>Complicación</strong> — El problema o desafío. ¿Por qué cambia algo? (1-2 slides)</li>
+          <li><strong>Pregunta</strong> — ¿Qué necesitamos resolver? La pregunta que guía la presentación (1 slide)</li>
+          <li><strong>Respuesta / Análisis</strong> — Datos, hallazgos, propuestas (el cuerpo)</li>
+          <li><strong>Conclusión</strong> — Qué hacer, próximos pasos (1-2 slides)</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3>Número de slides:</h3>
+      <table>
+        <tr><th>Duración</th><th>Slides recomendados</th></tr>
+        <tr><td>5 minutos</td><td>3-5 slides</td></tr>
+        <tr><td>10 minutos</td><td>7-10 slides</td></tr>
+        <tr><td>20 minutos</td><td>12-15 slides</td></tr>
+        <tr><td>30+ minutos</td><td>15-20 slides máximo</td></tr>
+      </table>
+      <div class="callout warn" style="margin-top:12px"><strong>Regla de oro:</strong> Si tienes más slides que minutos, hay demasiado. Cada slide debe tener un mensaje claro. Si no puedes describir el mensaje en una frase, está sobrecargada.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Jerarquía Visual — El Orden que Guía los Ojos</h2>
+  <div class="cols">
+    <div>
+      <h3>La jerarquía visual dirige la atención:</h3>
+      <div class="hier">
+        <div class="h1">Título del slide — Lo primero que se lee</div>
+        <div class="h2">Subtítulo o dato principal — Lo segundo</div>
+        <div class="h3">Punto de apoyo — Lo tercero</div>
+        <div class="body">Texto de detalle — Opcional, solo si es necesario</div>
+      </div>
+      <br>
+      <div class="callout">
+        <strong>Los 3 tamaños de texto en una slide:</strong> El título (grande, impactante), el dato clave (mediano, destaca), el cuerpo (pequeño, apoya). Nunca más de 3 niveles.
+      </div>
+    </div>
+    <div>
+      <h3>Contraste y peso visual:</h3>
+      <ul class="check-list">
+        <li>Usa negrita con moderación — solo para el dato crítico</li>
+        <li>Color diferente solo para 1-2 elementos por slide</li>
+        <li>Espacio en blanco = respirar. No llenes todo</li>
+        <li>Alinea los elementos: izquierda o centrado, nunca mezclado</li>
+        <li>Una imagen vale más que 5 bullets</li>
+      </ul>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Regla 6x6:</strong> Máximo 6 líneas por slide, máximo 6 palabras por línea. Si necesitas más texto, es material de soporte (documento Word), no una diapositiva.</div>
+      </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Temas, Patrones y Branding Corporativo</h2>
+  <div class="cols">
+    <div>
+      <h3>Patrón de diapositiva (Slide Master):</h3>
+      <p>Es una "plantilla madre" que controla el diseño de todas las diapositivas. Si cambias el Patrón, todas las diapositivas cambian automáticamente.</p>
+      <div class="callout"><strong>Cómo acceder:</strong> Vista → Patrón de diapositivas. Aquí puedes cambiar fuentes, colores, logo, y el layout de todas las slides de una vez.</div>
+      <div class="box" style="margin-top:14px">
+        <h3>¿Qué poner en el Patrón?</h3>
+        <ul>
+          <li>Logo de la empresa (esquina fija)</li>
+          <li>Paleta de colores corporativa</li>
+          <li>Fuente corporativa</li>
+          <li>Número de página</li>
+          <li>Pie de página con nombre del informe</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3>Paleta de colores profesional:</h3>
+      <p>No uses los colores predeterminados de PowerPoint. Elige 2-3 colores que representen a la empresa.</p>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#1a3a5c">Azul<br>Corp.</div>
+        <div class="swatch" style="background:#0d6e4c">Verde<br>Corp.</div>
+        <div class="swatch" style="background:#f0b429;color:#1a1000">Acento</div>
+        <div class="swatch" style="background:#e0e6ed;color:#1a1a2a">Texto</div>
+        <div class="swatch" style="background:#1a1a2a">Fondo<br>Dark</div>
+      </div>
+      <div class="callout tip" style="margin-top:10px"><strong>Herramienta gratuita:</strong> Coolors.co para generar paletas de colores. Adobe Color para extraer colores del logo de la empresa.</div>
+      <div class="callout warn" style="margin-top:10px"><strong>Evitar:</strong> Fondo blanco con texto negro en presentaciones ejecutivas. Es el diseño más aburrido. Usa contraste: fondo oscuro con texto claro, o fondo claro con acento de color.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Tipografía Profesional en Presentaciones</h2>
+  <div class="cols">
+    <div>
+      <h3>Fuentes recomendadas:</h3>
+      <table>
+        <tr><th>Fuente</th><th>Uso</th><th>Por qué</th></tr>
+        <tr><td style="color:#fb923c;font-weight:700;font-size:1.1em">Calibri</td><td>Cuerpo</td><td>Legible en pantalla, corporativa</td></tr>
+        <tr><td style="color:#fb923c;font-weight:700;font-family:Georgia;font-size:1.1em">Georgia</td><td>Títulos elegantes</td><td>Serif clásica, transmite solidez</td></tr>
+        <tr><td style="color:#fb923c;font-weight:700;font-size:1.2em">Montserrat</td><td>Títulos modernos</td><td>Geométrica, muy profesional</td></tr>
+        <tr><td style="color:#fb923c;font-size:1em">Open Sans</td><td>Todo uso</td><td>Limpia, muy legible</td></tr>
+      </table>
+      <div class="callout warn" style="margin-top:10px"><strong>Nunca usar:</strong> Comic Sans, Papyrus, Times New Roman en presentaciones de negocios. No en 2026.</div>
+    </div>
+    <div>
+      <h3>Tamaños mínimos:</h3>
+      <table>
+        <tr><th>Elemento</th><th>Tamaño mínimo</th></tr>
+        <tr><td>Título principal</td><td>36-44 pt</td></tr>
+        <tr><td>Subtítulo</td><td>24-28 pt</td></tr>
+        <tr><td>Texto cuerpo</td><td>18-20 pt</td></tr>
+        <tr><td>Notas de pie</td><td>14-16 pt</td></tr>
+      </table>
+      <div class="callout tip" style="margin-top:10px"><strong>Regla de accesibilidad:</strong> Si el texto de tu slide no es legible desde 3 metros de distancia, es demasiado pequeño. En salas de conferencia el proyector puede quedar lejos.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Gráficos, Tablas e Imágenes en Presentaciones</h2>
+  <div class="cols">
+    <div>
+      <h3>Cuándo usar cada elemento:</h3>
+      <table>
+        <tr><th>Elemento</th><th>Úsalo para...</th></tr>
+        <tr><td style="color:#fb923c">Gráfico barras</td><td>Comparar categorías o rankings</td></tr>
+        <tr><td style="color:#fb923c">Gráfico líneas</td><td>Mostrar tendencias en el tiempo</td></tr>
+        <tr><td style="color:#fb923c">Gráfico torta</td><td>Participación % (máx 5 porciones)</td></tr>
+        <tr><td style="color:#fb923c">Tabla</td><td>Datos exactos comparativos (pocas filas)</td></tr>
+        <tr><td style="color:#fb923c">Imagen/Foto</td><td>Humanizar, contextualizar, mostrar resultados</td></tr>
+        <tr><td style="color:#fb923c">Icono</td><td>Reforzar un concepto sin usar texto</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Errores con gráficos:</h3>
+      <ul class="x-list">
+        <li>Pegar el gráfico de Excel sin formatear (colores feos, tamaños mal)</li>
+        <li>Tabla de 20 filas y 8 columnas en una slide</li>
+        <li>Gráficos sin título (¿qué muestra esto?)</li>
+        <li>Imagen de baja resolución que se pixela</li>
+        <li>Dos gráficos similares en la misma slide</li>
+      </ul>
+      <div class="callout green" style="margin-top:14px"><strong>Mejor práctica:</strong> Importa el gráfico de Excel como imagen (no como objeto vinculado) para presentaciones finales. Es más limpio y no requiere Excel abierto.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide practica">
+  <h2>Actividad Práctica — 60 min</h2>
+  <div class="callout tip"><strong>Proyecto:</strong> Crea la presentación ejecutiva de resultados del trimestre de ADMIN CARIBE S.A.S. para la junta directiva.</div>
+  <div class="cols">
+    <div>
+      <h3>Estructura de la presentación:</h3>
+      <ul class="num-list">
+        <li><strong>Slide 1:</strong> Portada — Logo, título, fecha, presentador</li>
+        <li><strong>Slide 2:</strong> Agenda — 4 puntos a cubrir</li>
+        <li><strong>Slide 3:</strong> Contexto — ADMIN CARIBE: ¿quiénes somos?</li>
+        <li><strong>Slide 4:</strong> KPI principal — Total ventas del trimestre (grande, impactante)</li>
+        <li><strong>Slide 5:</strong> Gráfico — Ventas por ciudad (del dashboard de Excel)</li>
+        <li><strong>Slide 6:</strong> Gráfico — Tendencia mensual</li>
+        <li><strong>Slide 7:</strong> Análisis — Qué funcionó y qué mejorar</li>
+        <li><strong>Slide 8:</strong> Próximos pasos — 3 acciones concretas</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Requisitos de diseño:</h3>
+      <ul class="check-list">
+        <li>Patrón de diapositiva configurado con paleta propia</li>
+        <li>Máximo 6 líneas de texto por slide</li>
+        <li>Al menos 2 slides con gráficos del dashboard</li>
+        <li>Tipografía mínima 18pt en cuerpo</li>
+        <li>Logo ficticio de ADMIN CARIBE en todas las slides</li>
+        <li>Transiciones: solo "Empujar" o "Desvanecer" — nada exagerado</li>
+      </ul>
+      <div class="callout" style="margin-top:14px">
+        <strong>Entregable:</strong> Presentación .pptx + versión PDF. Presentarás 5 minutos esta presentación en el Día 12.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide resumen">
+  <h2>Resumen del Día 7</h2>
+  <div class="cols">
+    <div>
+      <h3>Principios aprendidos:</h3>
+      <ul class="check-list">
+        <li>Estructura SCQA para presentaciones ejecutivas</li>
+        <li>Regla 6x6: máximo 6 líneas y 6 palabras</li>
+        <li>Jerarquía visual: 3 niveles máximo</li>
+        <li>Patrón de diapositiva para branding consistente</li>
+        <li>Paleta de colores corporativa (2-3 colores)</li>
+        <li>Tipografía profesional y tamaños mínimos</li>
+        <li>Gráficos, tablas e imágenes: cuándo usar cada uno</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Mañana (Día 8):</h3>
+      <div class="box">
+        <h3>Comunicación visual + Canva + IA</h3>
+        <ul>
+          <li>Leyes de Gestalt aplicadas a presentaciones</li>
+          <li>Animaciones y transiciones profesionales</li>
+          <li>Canva: presentaciones online</li>
+          <li>Google Slides y Prezi</li>
+          <li>IA para generar presentaciones automáticas</li>
+          <li>Notas del presentador</li>
+        </ul>
+      </div>
+      <div class="callout warn" style="margin-top:14px"><strong>Tarea:</strong> Continúa trabajando en la presentación de ADMIN CARIBE. Tenla lista para el Día 8 donde la mejoraremos con los principios de comunicación visual.</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 10</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 4 — Tablas Dinámicas | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#001a2a 0%,#003a1a 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#061510}
+.slide.resumen{background:linear-gradient(135deg,#051015 0%,#0a1f10 100%)}
+h1.titulo{font-size:2.8em;color:#fff;line-height:1.2;margin-bottom:16px}
+h1.titulo span{color:#00d4aa}
+.subtitulo{font-size:1.2em;color:#80ead0;margin-bottom:30px}
+h2{font-size:1.9em;color:#00d4aa;margin-bottom:26px;border-bottom:2px solid #003a2a;padding-bottom:10px}
+h3{font-size:1.3em;color:#60c8a8;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#00d4aa;color:#001a0f;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px}
+.box{background:#0a2030;border-radius:10px;padding:22px;border-left:4px solid #00d4aa}
+.box.yellow{border-left-color:#f0b429;background:#1a1500}
+.box.blue{border-left-color:#6fa8dc;background:#0a1a2a}
+.box.red{border-left-color:#e05050;background:#2a1010}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.callout{background:#001a0f;border:1px solid #00d4aa;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.warn{background:#1a1500;border-color:#f0b429}
+.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
+.callout.red{background:#2a1010;border-color:#e05050}
+.callout strong{color:#00d4aa}
+.callout.warn strong{color:#f0b429}
+.callout.tip strong{color:#6fa8dc}
+.callout.red strong{color:#e05050}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#00d4aa;font-weight:700}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#00d4aa;color:#001a0f;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#003a2a;color:#80ead0;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #0a2030;color:#c8d8e8}
+.col-key{color:#00d4aa;font-weight:600}
+/* Pivot table visual */
+.pivot-visual{background:#050f18;border:1px solid #003a2a;border-radius:10px;overflow:hidden;margin:16px 0}
+.pivot-header{background:#003a2a;padding:8px 14px;display:flex;gap:8px;align-items:center}
+.pivot-header span{color:#80ead0;font-size:0.85em}
+.pivot-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.pivot-panel{padding:16px;border-right:1px solid #003a2a}
+.pivot-panel:last-child{border-right:none}
+.pivot-panel h4{color:#60c8a8;font-size:0.85em;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.field-chip{background:#003a2a;color:#80ead0;padding:5px 12px;border-radius:6px;font-size:0.85em;margin:4px 0;display:inline-block;cursor:pointer}
+.field-chip.in{background:#00d4aa;color:#001a0f;font-weight:700}
+.zone{background:#020c10;border:1px dashed #004a3a;border-radius:8px;padding:12px;margin-top:8px;min-height:60px}
+.zone h5{color:#004a3a;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#003a2a}
+.progress-bar{height:100%;background:linear-gradient(90deg,#00d4aa,#80ead0);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#2a5a4a;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#2a5a4a;font-size:0.82em}
+.step-flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:nowrap;overflow-x:auto}
+.step{background:#0a2030;border:1px solid #00d4aa;border-radius:8px;padding:12px 16px;text-align:center;min-width:130px;flex-shrink:0}
+.step .num{color:#00d4aa;font-size:1.3em;font-weight:700}
+.step p{font-size:0.82em;color:#a0c8b8;margin:4px 0 0}
+.step-arrow{color:#00d4aa;font-size:1.5em;padding:0 8px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: PORTADA -->
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 4 DE 12</span>
+  <h1 class="titulo">Tablas <span>Dinámicas</span></h1>
+  <p class="subtitulo">Creación · Campos · Filtros · Segmentación · Análisis profesional</p>
+  <p style="color:#2a5a4a;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Inicio Unidad 11.1.2</p>
+</div>
+
+<!-- SLIDE 2: QUÉ ES UNA TABLA DINÁMICA -->
+<div class="slide tema">
+  <h2>¿Qué es una Tabla Dinámica?</h2>
+  <div class="cols">
+    <div>
+      <p>Una tabla dinámica es una herramienta que <strong style="color:#00d4aa">resume, agrupa y analiza</strong> grandes cantidades de datos con unos pocos clics — sin escribir fórmulas.</p>
+      <div class="callout">
+        <strong>Ejemplo:</strong> Tienes 10.000 filas de ventas. Con una tabla dinámica puedes saber en 10 segundos: total vendido por vendedor, por mes, por ciudad, por producto.
+      </div>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Diferencia clave:</strong> Con SUMAR.SI necesitas escribir una fórmula por cada combinación. La tabla dinámica lo hace automáticamente para todas las combinaciones.
+      </div>
+    </div>
+    <div>
+      <h3>¿Cuándo usarla?</h3>
+      <ul class="check-list">
+        <li>Cuando tienes más de 50 filas de datos</li>
+        <li>Cuando necesitas ver los datos desde distintos ángulos</li>
+        <li>Para crear informes que el jefe pide cambiar constantemente</li>
+        <li>Para análisis de ventas, compras, nómina, inventario</li>
+        <li>Para encontrar patrones y tendencias rápidamente</li>
+      </ul>
+      <br>
+      <div class="callout tip">
+        <strong>En empresas de Barranquilla:</strong> Cada fin de mes los auxiliares generan reportes. Con tabla dinámica, lo que antes tomaba 4 horas ahora toma 20 minutos.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: DIAGNÓSTICO INICIO TEMA -->
+<div class="slide tema">
+  <h2>Actividad Diagnóstica — 15 min</h2>
+  <div class="callout tip"><strong>Objetivo:</strong> Activar conocimientos previos sobre organización de datos y análisis.</div>
+  <div class="cols">
+    <div>
+      <h3>Responde individualmente:</h3>
+      <ul class="num-list">
+        <li>¿Has visto alguna vez una tabla dinámica en Excel? ¿Dónde?</li>
+        <li>¿Cómo calcularías las ventas totales por vendedor si tienes 500 filas de datos?</li>
+        <li>¿Qué es un "resumen" de datos para ti?</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Para compartir con el grupo:</h3>
+      <ul class="num-list">
+        <li>¿En qué situación de trabajo sería útil saber cuánto vendió cada persona del equipo?</li>
+        <li>¿Qué pasa si el jefe cambia de opinión y quiere verlo por ciudad en vez de por vendedor?</li>
+      </ul>
+      <div class="callout" style="margin-top:14px">
+        <strong>Respuesta a la pregunta 5:</strong> Con fórmulas = reescribir todo. Con tabla dinámica = un arrastre de campo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: CÓMO CREAR UNA TABLA DINÁMICA -->
+<div class="slide tema">
+  <h2>Cómo Crear una Tabla Dinámica — Paso a Paso</h2>
+  <div class="step-flow">
+    <div class="step"><div class="num">1</div><p>Clic en cualquier celda de tus datos</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><div class="num">2</div><p>Insertar → Tabla dinámica</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><div class="num">3</div><p>Elegir: nueva hoja o misma hoja</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><div class="num">4</div><p>Arrastrar campos a las zonas</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><div class="num">5</div><p>¡Listo! El análisis se genera solo</p></div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>Las 4 zonas de una Tabla Dinámica:</h3>
+      <div class="box" style="margin-bottom:12px">
+        <h3>📊 VALORES</h3>
+        <p>Qué quieres calcular: suma, conteo, promedio, máximo. Ej: total de ventas</p>
+      </div>
+      <div class="box blue" style="margin-bottom:12px">
+        <h3>📋 FILAS</h3>
+        <p>Cómo agrupar verticalmente. Ej: por vendedor, por ciudad, por producto</p>
+      </div>
+    </div>
+    <div>
+      <div class="box yellow" style="margin-bottom:12px">
+        <h3>📑 COLUMNAS</h3>
+        <p>Cómo agrupar horizontalmente. Ej: por mes, por trimestre, por año</p>
+      </div>
+      <div class="box red" style="margin-bottom:12px">
+        <h3>🔽 FILTROS</h3>
+        <p>Para filtrar toda la tabla. Ej: mostrar solo una ciudad o un producto</p>
+      </div>
+      <div class="callout" style="margin-top:8px"><strong>Regla de oro:</strong> En FILAS va lo que quieres comparar. En VALORES va lo que quieres medir.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: PANEL DE CAMPOS -->
+<div class="slide tema">
+  <h2>El Panel de Campos — Así Funciona</h2>
+  <p>Imagina que tienes una tabla de ventas con estas columnas: Vendedor, Región, Producto, Mes, Cantidad, Precio, Total</p>
+  <div class="cols">
+    <div>
+      <h3>Análisis 1: Total por Vendedor</h3>
+      <table>
+        <tr><th>Zona</th><th>Campo</th></tr>
+        <tr><td>FILAS</td><td style="color:#00d4aa">Vendedor</td></tr>
+        <tr><td>VALORES</td><td style="color:#00d4aa">Total (SUMA)</td></tr>
+        <tr><td>COLUMNAS</td><td style="color:#555">vacío</td></tr>
+        <tr><td>FILTROS</td><td style="color:#555">vacío</td></tr>
+      </table>
+      <h3 style="margin-top:14px">Análisis 2: Ventas por Mes y Región</h3>
+      <table>
+        <tr><th>Zona</th><th>Campo</th></tr>
+        <tr><td>FILAS</td><td style="color:#00d4aa">Mes</td></tr>
+        <tr><td>COLUMNAS</td><td style="color:#00d4aa">Región</td></tr>
+        <tr><td>VALORES</td><td style="color:#00d4aa">Total (SUMA)</td></tr>
+        <tr><td>FILTROS</td><td style="color:#555">vacío</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Resultado visual del Análisis 2:</h3>
+      <table>
+        <tr><th>Mes</th><th>Barranquilla</th><th>Bogotá</th><th>Medellín</th><th>Total</th></tr>
+        <tr><td>Enero</td><td>$12M</td><td>$18M</td><td>$9M</td><td>$39M</td></tr>
+        <tr><td>Febrero</td><td>$15M</td><td>$16M</td><td>$11M</td><td>$42M</td></tr>
+        <tr><td>Marzo</td><td>$11M</td><td>$20M</td><td>$8M</td><td>$39M</td></tr>
+        <tr style="background:#003a2a"><td><strong>Total</strong></td><td>$38M</td><td>$54M</td><td>$28M</td><td><strong>$120M</strong></td></tr>
+      </table>
+      <div class="callout" style="margin-top:12px"><strong>¡Esto se generó automáticamente!</strong> Sin una sola fórmula. Si cambias "Región" por "Producto" en COLUMNAS, la tabla se recalcula instantáneamente.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: TIPOS DE CÁLCULO -->
+<div class="slide tema">
+  <h2>Tipos de Cálculo en la Zona VALORES</h2>
+  <p>Por defecto Excel suma los números. Pero puedes cambiar a otros cálculos haciendo clic derecho sobre el valor → "Configuración de campo de valor".</p>
+  <div class="cols3">
+    <div class="box">
+      <h3>Suma</h3>
+      <p>Total de ventas, total de gastos, total de producción</p>
+      <p style="color:#00d4aa;font-family:monospace">SUMA de Total</p>
+    </div>
+    <div class="box">
+      <h3>Contar</h3>
+      <p>Cuántas transacciones, cuántos clientes, cuántos pedidos</p>
+      <p style="color:#00d4aa;font-family:monospace">CONTAR de Pedido</p>
+    </div>
+    <div class="box">
+      <h3>Promedio</h3>
+      <p>Precio promedio, ticket promedio, salario promedio</p>
+      <p style="color:#00d4aa;font-family:monospace">PROMEDIO de Precio</p>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:16px">
+    <div class="box">
+      <h3>Máximo y Mínimo</h3>
+      <p>Venta más alta del mes, pedido más pequeño, empleado con mayor sueldo</p>
+    </div>
+    <div class="box">
+      <h3>% del total</h3>
+      <p>¿Qué porcentaje representa Barranquilla del total de ventas? Configura: "% del total general"</p>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><strong>Error común:</strong> Si arrastras una columna de texto a VALORES, Excel la cuenta automáticamente (CONTAR) en lugar de sumar. Esto es correcto para contar registros.</div>
+</div>
+
+<!-- SLIDE 7: FILTROS Y SEGMENTACIÓN -->
+<div class="slide tema">
+  <h2>Filtros y Segmentación de Datos</h2>
+  <div class="cols">
+    <div>
+      <h3>Filtro de la Tabla Dinámica:</h3>
+      <p>Al poner un campo en la zona FILTROS, aparece un desplegable arriba de la tabla. Puedes seleccionar una o varias opciones para ver solo esos datos.</p>
+      <div class="callout">
+        <strong>Ejemplo:</strong> Filtro por "Región = Barranquilla" → la tabla muestra solo las ventas de Barranquilla en todos los meses y productos.
+      </div>
+      <div class="box" style="margin-top:14px">
+        <h3>Filtros en FILAS/COLUMNAS:</h3>
+        <p>Cada fila o columna tiene su propio menú de filtro (la flechita). Puedes filtrar, ordenar, agrupar desde ahí.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Slicers (Segmentadores):</h3>
+      <p>Son botones visuales que filtran la tabla dinámica con un solo clic. Mucho más fácil que los menús desplegables.</p>
+      <div class="callout tip">
+        <strong>Cómo insertar:</strong> Clic en la tabla dinámica → pestaña "Analizar" → "Insertar segmentación de datos" → elige los campos.
+      </div>
+      <div class="box blue" style="margin-top:14px">
+        <h3>Múltiples slicers conectados</h3>
+        <p>Puedes tener un slicer de Ciudad, uno de Mes y uno de Vendedor — todos filtrando la misma tabla simultáneamente. ¡Esto es la base de un dashboard!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: ACTUALIZAR TABLA DINÁMICA -->
+<div class="slide tema">
+  <h2>Actualizar y Mantener la Tabla Dinámica</h2>
+  <div class="cols">
+    <div>
+      <h3>La tabla NO se actualiza sola:</h3>
+      <p>Si agregas datos nuevos a la base de datos, la tabla dinámica NO los refleja automáticamente. Debes actualizarla.</p>
+      <div class="callout warn">
+        <strong>Para actualizar:</strong> Clic derecho sobre la tabla dinámica → "Actualizar". O pestaña "Analizar" → "Actualizar". O CTRL+ALT+F5 para actualizar todas.
+      </div>
+      <div class="box" style="margin-top:14px">
+        <h3>Solución: Usar Tabla de Excel</h3>
+        <p>Si conviertes tus datos en Tabla (CTRL+T antes de crear la tabla dinámica), los nuevos datos se incluyen automáticamente al actualizar.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Cambiar el rango de datos:</h3>
+      <p>Si agregaste más filas fuera del rango original:</p>
+      <ul class="num-list">
+        <li>Clic en la tabla dinámica</li>
+        <li>Pestaña "Analizar"</li>
+        <li>"Cambiar origen de datos"</li>
+        <li>Seleccionar el nuevo rango (con las filas nuevas)</li>
+        <li>Aceptar y actualizar</li>
+      </ul>
+      <div class="callout tip" style="margin-top:14px"><strong>Mejor práctica:</strong> Usa siempre Tabla de Excel (CTRL+T) como fuente. Así el rango se expande solo cuando agregas datos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: CONFIGURACIONES AVANZADAS -->
+<div class="slide tema">
+  <h2>Configuraciones Útiles de Tabla Dinámica</h2>
+  <div class="cols">
+    <div>
+      <h3>Agrupar por fecha:</h3>
+      <p>Si tienes fechas en las filas, puedes hacer clic derecho → "Agrupar" → agrupar por meses, trimestres, años automáticamente. Sin fórmulas.</p>
+      <div class="box" style="margin-bottom:14px">
+        <h3>Ordenar resultados:</h3>
+        <p>Clic en el encabezado de la tabla → Ordenar de mayor a menor para ver inmediatamente quién vendió más o qué producto es el top.</p>
+      </div>
+      <div class="box">
+        <h3>Mostrar valores como %:</h3>
+        <p>Clic derecho en un valor → "Mostrar valores como" → "% del total de la fila" o "% del total general". Perfecto para análisis de participación.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Diseño de la tabla:</h3>
+      <ul class="check-list">
+        <li>Pestaña "Diseño" → elige el estilo visual</li>
+        <li>Activa "Filas de bandas" para mejor lectura</li>
+        <li>Activa "Totales generales" para ver los totales</li>
+        <li>Desactiva "Subtotales" si distraen</li>
+        <li>"Diseño del informe" → "Mostrar en forma tabular" para formato limpio</li>
+      </ul>
+      <div class="callout" style="margin-top:14px">
+        <strong>Para reportes ejecutivos:</strong> Usa el diseño tabular (no el compacto predeterminado). Se ve más profesional y es más fácil de leer para tu jefe.</div>
+      </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: ACTIVIDAD PRÁCTICA -->
+<div class="slide practica">
+  <h2>Actividad Práctica — 60 min</h2>
+  <div class="callout tip"><strong>Contexto:</strong> ADMIN CARIBE tiene 6 meses de datos de ventas. El gerente quiere 4 análisis diferentes para la junta directiva de mañana.</div>
+  <div class="cols">
+    <div>
+      <h3>Datos base a crear:</h3>
+      <p>Base de datos de ventas con 50+ registros y columnas:</p>
+      <ul>
+        <li>Fecha | Vendedor | Ciudad | Producto | Categoría | Cantidad | Precio | Total</li>
+      </ul>
+      <h3 style="margin-top:16px">Tablas dinámicas requeridas:</h3>
+      <ul class="num-list">
+        <li>Total de ventas por vendedor (ordenado de mayor a menor)</li>
+        <li>Ventas por ciudad y mes (tabla cruzada)</li>
+        <li>Top 3 productos más vendidos (por cantidad)</li>
+        <li>Participación % de cada categoría en el total</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Formato del entregable:</h3>
+      <ul class="check-list">
+        <li>Cada análisis en su propia hoja</li>
+        <li>Diseño limpio y profesional (sin gris oscuro)</li>
+        <li>Totales generales visibles</li>
+        <li>Al menos un slicer de ciudad o mes</li>
+      </ul>
+      <div class="callout warn" style="margin-top:16px">
+        <strong>Evaluación:</strong> El docente cambiará 5 filas de datos y pedirá actualizar la tabla dinámica. Si la tabla muestra los nuevos datos correctamente = éxito.
+      </div>
+      <div class="callout" style="margin-top:10px">
+        <strong>Entregable:</strong> Este archivo es la primera evidencia del portafolio: "Dashboard de gestión administrativa".
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: ERRORES COMUNES TABLAS DINÁMICAS -->
+<div class="slide resumen">
+  <h2>Errores Frecuentes con Tablas Dinámicas</h2>
+  <div class="cols">
+    <div>
+      <h3>Problemas en los datos:</h3>
+      <ul class="x-list">
+        <li>Celdas combinadas en la base de datos (rompen la tabla)</li>
+        <li>Filas o columnas vacías en medio de los datos</li>
+        <li>Encabezados duplicados o vacíos</li>
+        <li>Mezclar texto y números en la misma columna</li>
+        <li>Fechas en formato texto (no las agrupa por mes)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Errores de uso:</h3>
+      <ul class="x-list">
+        <li>Agregar filas nuevas y no actualizar la tabla</li>
+        <li>Editar directamente las celdas de la tabla (no se puede)</li>
+        <li>No fijar el rango con $ cuando la fuente no es una Tabla</li>
+        <li>Poner texto en la zona VALORES (solo números ahí)</li>
+      </ul>
+      <div class="callout warn" style="margin-top:14px"><strong>La regla de oro:</strong> Los datos deben estar en formato de lista plana: una fila por registro, sin celdas combinadas, con encabezados únicos en la primera fila.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: RESUMEN -->
+<div class="slide resumen">
+  <h2>Resumen del Día 4</h2>
+  <div class="cols">
+    <div>
+      <h3>Aprendimos:</h3>
+      <ul class="check-list">
+        <li>Qué es y para qué sirve una tabla dinámica</li>
+        <li>Las 4 zonas: Filas, Columnas, Valores, Filtros</li>
+        <li>Tipos de cálculo: suma, contar, promedio, %</li>
+        <li>Filtros y slicers para análisis interactivo</li>
+        <li>Cómo actualizar y mantener la tabla</li>
+        <li>Buenas prácticas en los datos fuente</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Próxima clase (Día 5):</h3>
+      <div class="box">
+        <ul>
+          <li>Gráficos dinámicos vinculados a tablas</li>
+          <li>Slicers avanzados y líneas de tiempo</li>
+          <li>Power Query: importar y limpiar datos</li>
+          <li>Construcción de dashboard</li>
+        </ul>
+      </div>
+      <div class="callout" style="margin-top:14px">
+        <strong>Tarea:</strong> Agrega 10 filas nuevas a tu base de datos de ventas. Practica actualizar la tabla dinámica. ¿Los nuevos datos aparecen? Si usaste Tabla de Excel (CTRL+T), sí.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 12</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>

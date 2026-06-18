@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 3 — Funciones Financieras, Texto y Matriciales | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#1a1040 0%,#0d2a20 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#0a1520}
+.slide.resumen{background:linear-gradient(135deg,#0a1a2a 0%,#0d2a1a 100%)}
+h1.titulo{font-size:2.8em;color:#fff;line-height:1.2;margin-bottom:16px}
+h1.titulo span{color:#f0b429}
+.subtitulo{font-size:1.2em;color:#f5d87a;margin-bottom:30px}
+h2{font-size:1.9em;color:#f0b429;margin-bottom:26px;border-bottom:2px solid #2a2010;padding-bottom:10px}
+h3{font-size:1.3em;color:#f5d87a;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#f0b429;color:#1a1000;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px}
+.box{background:#1a2030;border-radius:10px;padding:22px;border-left:4px solid #f0b429}
+.box.green{border-left-color:#1ab87a;background:#0a2a1a}
+.box.blue{border-left-color:#6fa8dc;background:#0a1a2a}
+.box.red{border-left-color:#e05050;background:#2a1010}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.code{background:#050a12;border:1px solid #2a2010;border-radius:8px;padding:18px;font-family:'Courier New',monospace;font-size:1em;color:#79c0ff;margin:12px 0;line-height:1.8}
+.code .fn{color:#f0b429}
+.code .arg{color:#ffa657}
+.code .str{color:#a5d6ff}
+.code .comment{color:#8b949e}
+.code .result{color:#1ab87a;font-weight:700}
+.formula-box{background:#150f00;border:2px solid #f0b429;border-radius:10px;padding:20px;text-align:center;margin:16px 0}
+.formula-box .fn-name{font-size:1.7em;color:#f0b429;font-weight:700;font-family:'Courier New',monospace}
+.formula-box .syntax{font-size:1em;color:#c8d8e8;font-family:'Courier New',monospace;margin-top:8px}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#2a1a00;color:#f5d87a;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #1a2030;color:#c8d8e8}
+.col-key{color:#f0b429;font-weight:600;font-family:monospace}
+.callout{background:#1a1500;border:1px solid #f0b429;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.green{background:#0a2a1a;border-color:#1ab87a}
+.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
+.callout.warn{background:#2a1010;border-color:#e05050}
+.callout strong{color:#f0b429}
+.callout.green strong{color:#1ab87a}
+.callout.tip strong{color:#6fa8dc}
+.callout.warn strong{color:#e05050}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#1ab87a;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;padding-left:6px;margin-bottom:9px;display:flex;align-items:flex-start;gap:10px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#f0b429;color:#1a1000;min-width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+.fin-card{background:#150f00;border:1px solid #f0b429;border-radius:10px;padding:18px;text-align:center}
+.fin-card .letra{font-size:2.2em;color:#f0b429;font-weight:700;font-family:monospace}
+.fin-card p{font-size:0.88em;color:#c8a040;margin:6px 0 0}
+.fin-card strong{display:block;color:#fff;font-size:0.95em;margin-top:4px}
+.grid-fin{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:16px 0}
+.text-fn{background:#0a1020;border:1px solid #2a3050;border-radius:8px;padding:14px;margin-bottom:10px}
+.text-fn .fn{color:#79c0ff;font-family:monospace;font-size:1em;font-weight:700}
+.text-fn p{font-size:0.88em;color:#a8b8c8;margin:6px 0 0}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#2a2010}
+.progress-bar{height:100%;background:linear-gradient(90deg,#f0b429,#ffd87a);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#5a4a1a;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#5a4a1a;font-size:0.82em}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: PORTADA -->
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 3 DE 12</span>
+  <h1 class="titulo">Funciones <span>Financieras</span>,<br>Texto y Matriciales</h1>
+  <p class="subtitulo">PAGO · TASA · VA · VF · Funciones de texto · Fórmulas matriciales</p>
+  <p style="color:#6a5a2a;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Cierre Excel Parte 1</p>
+</div>
+
+<!-- SLIDE 2: REPASO -->
+<div class="slide tema">
+  <h2>Repaso Rápido — Días 1 y 2</h2>
+  <div class="cols">
+    <div>
+      <h3>¿Qué aprendimos?</h3>
+      <table>
+        <tr><th>Función</th><th>Para qué</th></tr>
+        <tr><td class="col-key">BUSCARV</td><td>Buscar valor → ir a la derecha</td></tr>
+        <tr><td class="col-key">BUSCARH</td><td>Buscar valor → ir hacia abajo</td></tr>
+        <tr><td class="col-key">INDICE+COINCIDIR</td><td>Búsqueda bidireccional flexible</td></tr>
+        <tr><td class="col-key">SUMAR.SI</td><td>Suma con condición</td></tr>
+        <tr><td class="col-key">CONTAR.SI</td><td>Contar con condición</td></tr>
+        <tr><td class="col-key">PROMEDIO.SI</td><td>Promedio con condición</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Hoy completamos el bloque:</h3>
+      <ul class="num-list">
+        <li>Funciones financieras: calcular cuotas, tasas, plazos</li>
+        <li>Funciones de texto: limpiar y transformar datos</li>
+        <li>Fórmulas matriciales: calcular arrays completos</li>
+        <li>Actividad integradora: reporte completo Admin Caribe</li>
+      </ul>
+      <div class="callout" style="margin-top:14px">
+        <strong>Meta del día:</strong> Al final tendrás el kit completo de funciones avanzadas para elaborar cualquier reporte empresarial básico.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: FUNCIONES FINANCIERAS INTRO -->
+<div class="slide tema">
+  <h2>Funciones Financieras — ¿Para qué sirven?</h2>
+  <p>En el trabajo administrativo y contable frecuentemente debes calcular cuotas de crédito, evaluar préstamos, proyectar ahorros. Excel tiene funciones que hacen estos cálculos automáticamente.</p>
+  <div class="grid-fin">
+    <div class="fin-card">
+      <div class="letra">VA</div>
+      <strong>Valor Actual</strong>
+      <p>¿Cuánto vale hoy una serie de pagos futuros?</p>
+    </div>
+    <div class="fin-card">
+      <div class="letra">VF</div>
+      <strong>Valor Futuro</strong>
+      <p>¿Cuánto tendrás si ahorras X cada mes?</p>
+    </div>
+    <div class="fin-card">
+      <div class="letra">PAGO</div>
+      <strong>Cuota Mensual</strong>
+      <p>¿Cuánto pagas al mes por un préstamo?</p>
+    </div>
+    <div class="fin-card">
+      <div class="letra">TASA</div>
+      <strong>Tasa de Interés</strong>
+      <p>¿Cuál es la tasa real de un crédito?</p>
+    </div>
+    <div class="fin-card">
+      <div class="letra">NPER</div>
+      <strong>N° Períodos</strong>
+      <p>¿En cuántos meses puedes pagar el crédito?</p>
+    </div>
+  </div>
+  <div class="callout tip"><strong>Contexto:</strong> En Colombia, los auxiliares contables usan estas funciones para verificar cuotas de crédito a clientes, calcular plazos de cartera y proyectar flujo de caja.</div>
+</div>
+
+<!-- SLIDE 4: FUNCIÓN PAGO -->
+<div class="slide practica">
+  <h2>Función PAGO — Cuota Mensual de un Crédito</h2>
+  <div class="cols">
+    <div>
+      <div class="formula-box">
+        <div class="fn-name">=PAGO(</div>
+        <div class="syntax">tasa ; nper ; va ; [vf] ; [tipo])</div>
+      </div>
+      <table>
+        <tr><th>Argumento</th><th>Significado</th></tr>
+        <tr><td class="col-key">tasa</td><td>Tasa de interés POR PERÍODO (mes)</td></tr>
+        <tr><td class="col-key">nper</td><td>Número total de períodos (meses)</td></tr>
+        <tr><td class="col-key">va</td><td>Valor actual (monto del préstamo)</td></tr>
+        <tr><td class="col-key">[vf]</td><td>Valor futuro (usualmente 0)</td></tr>
+        <tr><td class="col-key">[tipo]</td><td>0=pago al final, 1=inicio del mes</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Caso real:</h3>
+      <div class="callout tip">
+        <strong>ADMIN CARIBE necesita un préstamo:</strong><br>
+        Monto: $50.000.000<br>
+        Tasa banco: 18% anual (1.5% mensual)<br>
+        Plazo: 36 meses
+      </div>
+      <div class="code">
+        <span class="comment">Tasa mensual = 18%/12 = 1.5%</span><br>
+        <span class="fn">=PAGO(</span><br>
+        &nbsp;&nbsp;<span class="arg">18%/12</span>,&nbsp;<span class="comment">tasa mensual</span><br>
+        &nbsp;&nbsp;<span class="arg">36</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">meses</span><br>
+        &nbsp;&nbsp;<span class="arg">-50000000</span>&nbsp;<span class="comment">← negativo=prestado</span><br>
+        <span class="fn">)</span><br>
+        <span class="result">→ $1.807.495 por mes</span>
+      </div>
+      <div class="callout warn"><strong>Ojo:</strong> El valor actual (va) debe ser negativo porque es dinero que recibes. Si no pones el signo negativo, el resultado será negativo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: VF Y VA -->
+<div class="slide tema">
+  <h2>Funciones VF y VA</h2>
+  <div class="cols">
+    <div>
+      <h3>VF — ¿Cuánto tendrás si ahorras?</h3>
+      <div class="formula-box" style="padding:14px">
+        <div class="fn-name" style="font-size:1.4em">=VF(tasa, nper, pago, [va], [tipo])</div>
+      </div>
+      <div class="callout green">
+        <strong>Ejemplo:</strong> Ahorras $500.000 mensual al 6% anual (0.5% mensual) durante 24 meses. ¿Cuánto tendrás?
+      </div>
+      <div class="code">
+        <span class="fn">=VF(</span><span class="arg">6%/12</span>, <span class="arg">24</span>, <span class="arg">-500000</span><span class="fn">)</span><br>
+        <span class="result">→ $12.720.360</span><br>
+        <span class="comment">¡$12.7M por solo $12M aportados!</span>
+      </div>
+    </div>
+    <div>
+      <h3>VA — ¿Cuánto vale hoy ese flujo futuro?</h3>
+      <div class="formula-box" style="padding:14px">
+        <div class="fn-name" style="font-size:1.4em">=VA(tasa, nper, pago, [vf], [tipo])</div>
+      </div>
+      <div class="callout tip">
+        <strong>Ejemplo:</strong> Un cliente pagará $800.000 por mes durante 12 meses. Con una tasa del 12% anual, ¿cuánto es eso en dinero de hoy?
+      </div>
+      <div class="code">
+        <span class="fn">=VA(</span><span class="arg">12%/12</span>, <span class="arg">12</span>, <span class="arg">-800000</span><span class="fn">)</span><br>
+        <span class="result">→ $9.009.800 hoy</span><br>
+        <span class="comment">Aunque recibirás $9.6M en total</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: TASA Y NPER -->
+<div class="slide tema">
+  <h2>TASA y NPER — Verificar Créditos</h2>
+  <div class="cols">
+    <div>
+      <h3>TASA — ¿Cuál es la tasa real?</h3>
+      <div class="code">
+        <span class="fn">=TASA(</span>nper, pago, va<span class="fn">)</span><br><br>
+        <span class="comment">Un banco dice que prestar $10M</span><br>
+        <span class="comment">con cuotas de $350.000 por 36 meses</span><br>
+        <span class="comment">¿Cuál es la tasa mensual real?</span><br><br>
+        <span class="fn">=TASA(</span><span class="arg">36</span>, <span class="arg">-350000</span>, <span class="arg">10000000</span><span class="fn">)</span><br>
+        <span class="result">→ 2.36% mensual = 28.3% anual</span><br>
+        <span class="comment">¡El banco decía 24%!</span>
+      </div>
+      <div class="callout warn"><strong>Usar para:</strong> Verificar si la tasa que ofrece el banco coincide con lo que te dicen. Protege a la empresa de condiciones desfavorables.</div>
+    </div>
+    <div>
+      <h3>NPER — ¿Cuántos meses para pagar?</h3>
+      <div class="code">
+        <span class="fn">=NPER(</span>tasa, pago, va<span class="fn">)</span><br><br>
+        <span class="comment">Tengo deuda de $8.000.000</span><br>
+        <span class="comment">Puedo pagar $400.000 al mes</span><br>
+        <span class="comment">Tasa 2% mensual</span><br><br>
+        <span class="fn">=NPER(</span><span class="arg">2%</span>, <span class="arg">-400000</span>, <span class="arg">8000000</span><span class="fn">)</span><br>
+        <span class="result">→ 28.5 meses ≈ 29 meses</span>
+      </div>
+      <div class="callout green"><strong>Usar para:</strong> Calcular en cuántos meses un cliente puede saldar una deuda según su capacidad de pago.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: FUNCIONES DE TEXTO INTRO -->
+<div class="slide tema">
+  <h2>Funciones de Texto — Limpiar y Transformar Datos</h2>
+  <p>En empresas reales los datos llegan sucios: espacios de más, mezcla de mayúsculas, nombres concatenados. Estas funciones los limpian automáticamente.</p>
+  <div class="cols">
+    <div>
+      <div class="text-fn"><span class="fn">EXTRAER(texto, inicio, num_caracteres)</span><p>Extrae parte de un texto. Ej: del RUT "860123456-7" extraer solo el NIT</p></div>
+      <div class="text-fn"><span class="fn">ENCONTRAR(texto_buscado, en_texto)</span><p>Devuelve la posición de un texto dentro de otro. Ej: posición del guión en el NIT</p></div>
+      <div class="text-fn"><span class="fn">SUSTITUIR(texto, original, nuevo)</span><p>Reemplaza texto. Ej: quitar puntos del número de cédula "1.234.567" → "1234567"</p></div>
+      <div class="text-fn"><span class="fn">ESPACIOS(texto)</span><p>Elimina espacios extra al inicio, final y dobles espacios internos</p></div>
+    </div>
+    <div>
+      <div class="text-fn"><span class="fn">MAYUSC(texto) / MINUSC(texto)</span><p>Convierte a MAYÚSCULAS o minúsculas. Para estandarizar nombres</p></div>
+      <div class="text-fn"><span class="fn">NOMPROPIO(texto)</span><p>Primera letra mayúscula. "JUAN pérez" → "Juan Pérez"</p></div>
+      <div class="text-fn"><span class="fn">CONCATENAR(texto1, texto2, ...)</span><p>Une textos. También: texto1 &amp; " " &amp; texto2</p></div>
+      <div class="text-fn"><span class="fn">IZQUIERDA(texto, n) / DERECHA(texto, n)</span><p>Extrae los primeros/últimos N caracteres de un texto</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: FUNCIONES DE TEXTO EJEMPLOS -->
+<div class="slide practica">
+  <h2>Funciones de Texto — Casos Reales</h2>
+  <div class="cols">
+    <div>
+      <h3>Separar nombre y apellido:</h3>
+      <div class="code">
+        <span class="comment">A1 contiene "Juan Carlos Perez"</span><br><br>
+        <span class="comment">Extraer nombre (antes del primer espacio):</span><br>
+        <span class="fn">=IZQUIERDA(</span>A1, <span class="fn">ENCONTRAR(</span><span class="str">" "</span>,A1<span class="fn">)</span>-1<span class="fn">)</span><br>
+        <span class="result">→ "Juan"</span><br><br>
+        <span class="comment">Apellido (después del último espacio):</span><br>
+        <span class="fn">=DERECHA(</span>A1, <span class="fn">LARGO(</span>A1<span class="fn">)</span>-<span class="fn">ENCONTRAR(</span><span class="str">"*"</span>,<br>
+        &nbsp;&nbsp;<span class="fn">SUSTITUIR(</span>A1,<span class="str">" "</span>,<span class="str">"*"</span>,<span class="fn">LARGO(</span>A1<span class="fn">)</span>-<span class="fn">LARGO(</span><span class="fn">SUSTITUIR(</span>A1,<span class="str">" "</span>,<span class="str">""</span><span class="fn">)))</span><span class="fn">))</span><br>
+        <span class="result">→ "Perez"</span>
+      </div>
+    </div>
+    <div>
+      <h3>Limpiar datos de clientes:</h3>
+      <div class="code">
+        <span class="comment">Limpiar espacios extra:</span><br>
+        <span class="fn">=ESPACIOS(</span>A1<span class="fn">)</span><br><br>
+        <span class="comment">Estandarizar nombre:</span><br>
+        <span class="fn">=NOMPROPIO(</span><span class="fn">ESPACIOS(</span>A1<span class="fn">))</span><br>
+        <span class="result">"  juan PEREZ  " → "Juan Perez"</span><br><br>
+        <span class="comment">Quitar guiones de teléfono:</span><br>
+        <span class="fn">=SUSTITUIR(</span><span class="fn">SUSTITUIR(</span>A1,<span class="str">"-"</span>,<span class="str">""</span><span class="fn">)</span>,<span class="str">" "</span>,<span class="str">""</span><span class="fn">)</span><br>
+        <span class="result">"310-234-5678" → "3102345678"</span>
+      </div>
+      <div class="callout" style="margin-top:10px"><strong>Caso frecuente:</strong> Cuando importas datos de un sistema antiguo o de formularios web, los datos vienen sucios. Estas funciones ahorran horas de corrección manual.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: FÓRMULAS MATRICIALES -->
+<div class="slide tema">
+  <h2>Fórmulas Matriciales — Cálculos en Arrays</h2>
+  <p>Una fórmula matricial procesa múltiples valores a la vez, sin necesidad de columnas auxiliares. En Excel 365 con CTRL+SHIFT+ENTER o directamente con nuevas funciones de array.</p>
+  <div class="cols">
+    <div>
+      <h3>Ejemplo clásico:</h3>
+      <div class="callout tip"><strong>Problema:</strong> Tienes cantidades en A1:A5 y precios en B1:B5. Quieres el total sin crear una columna de subtotales.</div>
+      <div class="code">
+        <span class="comment">En vez de crear col C con A*B y sumar:</span><br>
+        <span class="fn">{=SUMA(</span>A1:A5*B1:B5<span class="fn">)}</span><br>
+        <span class="comment">Presiona CTRL+SHIFT+ENTER</span><br>
+        <span class="comment">Las llaves {} se agregan solas</span><br><br>
+        <span class="comment">En Excel 365 (sin Ctrl+Shift+Enter):</span><br>
+        <span class="fn">=SUMA(</span>A1:A5*B1:B5<span class="fn">)</span>
+      </div>
+    </div>
+    <div>
+      <h3>Más usos útiles:</h3>
+      <div class="code">
+        <span class="comment">Contar valores únicos en un rango:</span><br>
+        <span class="fn">{=SUMA(</span>1/<span class="fn">CONTAR.SI(</span>A1:A10,A1:A10<span class="fn">))}</span><br><br>
+        <span class="comment">Suma de los 3 mayores valores:</span><br>
+        <span class="fn">=SUMA(</span><span class="fn">K.ESIMO.MAYOR(</span>A1:A10,{1,2,3}<span class="fn">))</span><br><br>
+        <span class="comment">Multiplicar y sumar en un paso:</span><br>
+        <span class="fn">=SUMAPRODUCTO(</span>A1:A5, B1:B5<span class="fn">)</span><br>
+        <span class="comment">← No necesita Ctrl+Shift+Enter</span>
+      </div>
+      <div class="callout green" style="margin-top:10px"><strong>SUMAPRODUCTO</strong> es la función matricial más usada en empresas. Multiplica y suma en un solo paso.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: ACTIVIDAD INTEGRADORA -->
+<div class="slide practica">
+  <h2>Actividad Integradora — Reporte Ejecutivo 60 min</h2>
+  <div class="callout tip"><strong>Contexto:</strong> ADMIN CARIBE S.A.S. necesita un reporte financiero mensual completo. Tú eres el auxiliar encargado.</div>
+  <div class="cols">
+    <div>
+      <h3>Hoja 1: Cartera de Clientes</h3>
+      <ul class="num-list">
+        <li>15 clientes con: nombre, ciudad, deuda, días vencido</li>
+        <li>Calcular interés mensual por mora con función PAGO</li>
+        <li>SUMAR.SI por ciudad</li>
+        <li>CONTAR.SI clientes con deuda &gt;$5M</li>
+      </ul>
+      <h3 style="margin-top:16px">Hoja 2: Créditos Empresariales</h3>
+      <ul class="num-list">
+        <li>Tabla con 3 opciones de crédito del banco</li>
+        <li>Calcular cuota mensual con PAGO</li>
+        <li>Calcular tasa real con TASA</li>
+        <li>Recomendación: ¿cuál conviene más?</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Hoja 3: Limpieza de Datos</h3>
+      <ul class="num-list">
+        <li>Base de datos de proveedores con datos sucios</li>
+        <li>Aplicar ESPACIOS, NOMPROPIO, SUSTITUIR</li>
+        <li>Separar nombre y apellido</li>
+        <li>Estandarizar teléfonos</li>
+      </ul>
+      <h3 style="margin-top:16px">Hoja 4: Dashboard Resumen</h3>
+      <ul class="num-list">
+        <li>Total cartera por ciudad (SUMAR.SI)</li>
+        <li>Cuota más baja de los créditos (MIN)</li>
+        <li>SUMAPRODUCTO del inventario (precio × cantidad)</li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px"><strong>Entregable:</strong> Archivo Excel con las 4 hojas, todas las fórmulas funcionales. Esto va al portafolio del módulo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: BUENAS PRÁCTICAS GENERALES EXCEL -->
+<div class="slide tema">
+  <h2>Buenas Prácticas Generales — Excel Avanzado</h2>
+  <div class="cols">
+    <div>
+      <h3>Organización del archivo:</h3>
+      <ul class="check-list">
+        <li>Una hoja para datos, otra para análisis, otra para reportes</li>
+        <li>Nombrar las hojas claramente (no "Hoja1")</li>
+        <li>Usar tablas de Excel (CTRL+T) para referencias dinámicas</li>
+        <li>Nombrar rangos importantes para fórmulas más legibles</li>
+        <li>Guardar en .xlsx, nunca en .xls para preservar funciones</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Seguridad y calidad:</h3>
+      <ul class="check-list">
+        <li>Proteger hojas de datos (Revisar → Proteger hoja)</li>
+        <li>Validación de datos para evitar errores de entrada</li>
+        <li>Hacer una copia de seguridad antes de cambios masivos</li>
+        <li>Documentar fórmulas complejas con comentarios</li>
+        <li>Verificar resultados con cálculos manuales de muestra</li>
+      </ul>
+      <div class="callout" style="margin-top:14px"><strong>Ley 1581 de 2012:</strong> Los datos personales de clientes y empleados en tus archivos de Excel deben estar protegidos. Siempre protege con contraseña los archivos con información sensible.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: IMPACTO IA EN EXCEL -->
+<div class="slide tema">
+  <h2>IA en Excel — Lo que ya existe</h2>
+  <div class="cols">
+    <div>
+      <div class="box" style="margin-bottom:16px">
+        <h3>🤖 Microsoft Copilot en Excel</h3>
+        <ul>
+          <li>Escribe en lenguaje natural: "calcula la cuota mensual del préstamo de $50M al 18% a 36 meses"</li>
+          <li>Copilot escribe el PAGO automáticamente</li>
+          <li>Puede crear tablas dinámicas con una descripción</li>
+          <li>Genera gráficos desde texto</li>
+        </ul>
+      </div>
+      <div class="callout warn">
+        <strong>Importante:</strong> Copilot puede equivocarse. Siempre verifica el resultado con tus conocimientos de PAGO, TASA, etc. Si no sabes las funciones, no puedes validar la IA.
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h3>💬 ChatGPT para Excel</h3>
+        <ul>
+          <li>"Explícame por qué mi BUSCARV devuelve #N/A"</li>
+          <li>"Cómo hago para limpiar espacios en una columna de 500 filas"</li>
+          <li>"Escríbeme una fórmula para separar el nombre del apellido"</li>
+          <li>Genera fórmulas, corrige errores, explica paso a paso</li>
+        </ul>
+      </div>
+      <div class="callout green" style="margin-top:14px"><strong>El futuro del auxiliar:</strong> No memorizar fórmulas, sino saber qué pedir y cómo verificar. Pero primero hay que entender la base.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: CIERRE BLOQUE EXCEL -->
+<div class="slide resumen">
+  <h2>Cierre del Bloque: Excel Avanzado Parte 1</h2>
+  <div class="cols">
+    <div>
+      <h3>Funciones dominadas en 3 días:</h3>
+      <ul class="check-list">
+        <li>BUSCARV y BUSCARH</li>
+        <li>INDICE + COINCIDIR (bidireccional)</li>
+        <li>SUMAR.SI y SUMAR.SI.CONJUNTO</li>
+        <li>CONTAR.SI y PROMEDIO.SI</li>
+        <li>PAGO, VA, VF, TASA, NPER</li>
+        <li>EXTRAER, ENCONTRAR, SUSTITUIR</li>
+        <li>ESPACIOS, NOMPROPIO, CONCATENAR</li>
+        <li>SUMAPRODUCTO y fórmulas matriciales</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Lo que viene:</h3>
+      <div class="box">
+        <h3>Días 4-6: Tablas Dinámicas y Dashboards</h3>
+        <ul>
+          <li>Día 4: Crear y configurar tablas dinámicas</li>
+          <li>Día 5: Gráficos, slicers y Power Query</li>
+          <li>Día 6: Macros básicas y dashboard ejecutivo</li>
+        </ul>
+      </div>
+      <div class="callout" style="margin-top:14px">
+        <strong>Evidencia a entregar:</strong> El reporte de hoy (4 hojas) forma parte del portafolio final del módulo. Asegúrate de guardarlo con tu nombre.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 13</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>

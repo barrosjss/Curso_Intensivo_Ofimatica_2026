@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 1 — BUSCARV y BUSCARH | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:60px 80px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+/* Slide types */
+.slide.portada{background:linear-gradient(135deg,#0d2d42 0%,#0a4a2e 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#0a1f12}
+.slide.error{background:#1f0d0d}
+.slide.resumen{background:linear-gradient(135deg,#0a2a1a 0%,#0d1b2a 100%)}
+
+/* Typography */
+h1.titulo{font-size:3em;color:#fff;line-height:1.2;margin-bottom:16px}
+h1.titulo span{color:#1ab87a}
+.subtitulo{font-size:1.3em;color:#a8d5c2;margin-bottom:30px}
+h2{font-size:2em;color:#1ab87a;margin-bottom:30px;border-bottom:2px solid #1a3a5c;padding-bottom:12px}
+h3{font-size:1.4em;color:#5bc4a0;margin-bottom:16px}
+p{font-size:1.15em;line-height:1.7;color:#c8d8e8;margin-bottom:14px}
+li{font-size:1.1em;line-height:1.8;color:#c8d8e8;margin-left:24px}
+ul{margin-bottom:20px}
+.big{font-size:1.5em;color:#fff;font-weight:600;margin-bottom:16px}
+.meta{color:#6fa8dc;font-size:0.95em;margin-top:4px}
+.dia-badge{background:#1ab87a;color:#fff;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.modulo-badge{color:#a8d5c2;font-size:0.95em;margin-bottom:8px}
+
+/* Content blocks */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:10px}
+.box{background:#1a2d42;border-radius:12px;padding:24px;border-left:4px solid #1ab87a}
+.box.red{border-left-color:#e05050;background:#2d1a1a}
+.box.blue{border-left-color:#6fa8dc;background:#1a2540}
+.box.yellow{border-left-color:#f0b429;background:#2a2010}
+.box.green{border-left-color:#1ab87a;background:#0a2a1a}
+.box h3{font-size:1.15em;margin-bottom:10px}
+
+/* Code box */
+.code{background:#0a0f1a;border:1px solid #1a3a5c;border-radius:8px;padding:20px;font-family:'Courier New',monospace;font-size:1.05em;color:#79c0ff;margin:16px 0;line-height:1.8}
+.code .fn{color:#ff7b72}
+.code .arg{color:#ffa657}
+.code .str{color:#a5d6ff}
+.code .comment{color:#8b949e}
+
+/* Formula visual */
+.formula-box{background:#0d2a1a;border:2px solid #1ab87a;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.formula-box .fn-name{font-size:2em;color:#1ab87a;font-weight:700;font-family:'Courier New',monospace}
+.formula-box .syntax{font-size:1.1em;color:#c8d8e8;font-family:'Courier New',monospace;margin-top:8px}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95em}
+th{background:#1a3a5c;color:#fff;padding:10px 14px;text-align:left}
+td{padding:10px 14px;border-bottom:1px solid #1a2d42;color:#c8d8e8}
+tr:hover td{background:#1a2535}
+.col-key{color:#1ab87a;font-weight:600;font-family:monospace}
+
+/* Diagram */
+.diagram{display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0}
+.diagram .box-d{background:#1a2d42;border:2px solid #1a3a5c;border-radius:10px;padding:16px 24px;text-align:center;min-width:120px}
+.diagram .box-d.highlight{border-color:#1ab87a;background:#0a2a1a}
+.diagram .arrow{color:#1ab87a;font-size:2em}
+
+/* Progress bar */
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#1a2d42}
+.progress-bar{height:100%;background:linear-gradient(90deg,#1ab87a,#6fa8dc);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#4a6a82;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#4a6a82;font-size:0.82em}
+.nav-hint{position:fixed;top:16px;right:20px;color:#2a4a5a;font-size:0.8em}
+
+/* List styles */
+.check-list li{list-style:none;padding-left:8px;margin-bottom:8px}
+.check-list li::before{content:'✓ ';color:#1ab87a;font-weight:700}
+.x-list li{list-style:none;padding-left:8px;margin-bottom:8px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;padding-left:8px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#1ab87a;color:#0a1a0f;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9em;flex-shrink:0}
+
+/* Callout */
+.callout{background:#0a2a1a;border:1px solid #1ab87a;border-radius:10px;padding:20px 24px;margin:20px 0;font-size:1.05em}
+.callout.warn{background:#2a1a0a;border-color:#f0b429}
+.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
+.callout strong{color:#1ab87a}
+.callout.warn strong{color:#f0b429}
+.callout.tip strong{color:#6fa8dc}
+
+/* Icon circles */
+.icon-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.icon-card{background:#1a2d42;border-radius:16px;padding:24px;text-align:center;min-width:150px;flex:1;max-width:200px}
+.icon-card .icon{font-size:2.5em;margin-bottom:10px}
+.icon-card p{font-size:0.88em;color:#a8c8d8;margin:0}
+.icon-card strong{display:block;color:#fff;font-size:1em;margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: PORTADA -->
+<div class="slide portada active" id="s1">
+  <span class="dia-badge">DÍA 1 DE 12</span>
+  <h1 class="titulo">Módulo 11:<br><span>Herramientas Ofimáticas II</span></h1>
+  <p class="subtitulo">Bienvenida + Funciones de Búsqueda en Excel</p>
+  <div style="margin-top:30px;color:#6a8a7a;font-size:0.95em">
+    <p>INTEBIEN S.A.S. | 2026-2 | 2 horas</p>
+    <p style="margin-top:6px">Auxiliar Administrativo, Contable y Logístico</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: PANORAMA DEL MÓDULO -->
+<div class="slide tema" id="s2">
+  <h2>¿Qué aprenderemos en estas 12 clases?</h2>
+  <div class="cols3">
+    <div class="box">
+      <h3>📊 Excel Avanzado</h3>
+      <ul><li>BUSCARV / BUSCARH</li><li>INDICE + COINCIDIR</li><li>Funciones condicionales</li><li>Funciones financieras</li><li>Tablas Dinámicas</li><li>Macros básicas</li></ul>
+    </div>
+    <div class="box">
+      <h3>🎯 Presentaciones</h3>
+      <ul><li>Diseño ejecutivo en PowerPoint</li><li>Branding corporativo</li><li>Comunicación visual</li><li>Canva y alternativas</li><li>IA para presentaciones</li></ul>
+    </div>
+    <div class="box">
+      <h3>🗄️ Bases de Datos e IA</h3>
+      <ul><li>BD relacionales — conceptos</li><li>Access básico</li><li>Excel como base de datos</li><li>ChatGPT y Copilot</li><li>Ética digital y IA</li></ul>
+    </div>
+  </div>
+  <div class="callout tip" style="margin-top:24px"><strong>Meta:</strong> Al terminar podrás elaborar reportes dinámicos, presentaciones ejecutivas y gestionar bases de datos. Esto vale en cualquier empresa de Barranquilla y el Caribe.</div>
+</div>
+
+<!-- SLIDE 3: COMPETENCIA -->
+<div class="slide tema" id="s3">
+  <h2>Competencia del Módulo 11</h2>
+  <div class="box green" style="padding:30px;margin-bottom:30px">
+    <p style="font-size:1.2em;color:#fff;line-height:1.8">"Aplicar herramientas ofimáticas avanzadas — Excel avanzado, bases de datos, PowerPoint, herramientas de IA — para la <strong style="color:#1ab87a">producción de informes, reportes y presentaciones ejecutivas</strong> de alta calidad en el entorno administrativo."</p>
+  </div>
+  <h3>Lo que se evaluará:</h3>
+  <ul class="check-list">
+    <li>Tablas dinámicas y gráficos para análisis de información</li>
+    <li>Funciones avanzadas: BUSCARV, INDICE, COINCIDIR, SUMAR.SI.CONJUNTO</li>
+    <li>Macros básicas de automatización</li>
+    <li>Presentaciones ejecutivas con criterio estético</li>
+    <li>Bases de datos relacionales simples</li>
+    <li>Herramientas de IA en tareas administrativas reales</li>
+  </ul>
+</div>
+
+<!-- SLIDE 4: MERCADO LABORAL -->
+<div class="slide tema" id="s4">
+  <h2>¿Por qué esto importa en Barranquilla?</h2>
+  <div class="cols">
+    <div>
+      <div class="box blue" style="margin-bottom:20px">
+        <h3>💼 El mercado pide esto</h3>
+        <ul>
+          <li>Comercio: control de inventarios con Excel</li>
+          <li>Salud: reportes de pacientes y costos</li>
+          <li>Educación: seguimiento académico</li>
+          <li>Sector público: informes de gestión</li>
+          <li>Logística: trazabilidad de pedidos</li>
+        </ul>
+      </div>
+      <div class="box yellow">
+        <h3>📈 Datos reales</h3>
+        <p>El 78% de ofertas de trabajo para auxiliares en la región Caribe exigen manejo de Excel intermedio-avanzado.</p>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h3>🤖 La transformación digital llegó</h3>
+        <ul>
+          <li>Microsoft Copilot integrado en Excel</li>
+          <li>Power BI como evolución del dashboard</li>
+          <li>ChatGPT para análisis de datos</li>
+          <li>Google Sheets con automatización</li>
+          <li>No-code para auxiliares sin programar</li>
+        </ul>
+      </div>
+      <div class="callout" style="margin-top:20px">
+        <strong>El auxiliar que domina estas herramientas</strong> no solo hace el trabajo más rápido — también propone mejoras y asciende.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: DIAGNÓSTICO -->
+<div class="slide tema" id="s5">
+  <h2>Actividad Diagnóstica — 20 min</h2>
+  <div class="callout tip"><strong>Objetivo:</strong> Activar saberes previos. No es evaluado. ¡Responde con honestidad!</div>
+  <br>
+  <div class="cols">
+    <div>
+      <h3>Responde individualmente:</h3>
+      <ul class="num-list">
+        <li>¿Has usado Excel en algún trabajo o práctica? ¿Para qué?</li>
+        <li>¿Conoces alguna función de búsqueda en Excel? Menciona cuál.</li>
+        <li>¿Sabes qué es una tabla dinámica?</li>
+        <li>¿Has usado PowerPoint o Canva para presentar?</li>
+        <li>¿Has usado ChatGPT para tareas de trabajo o estudio?</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Luego en parejas:</h3>
+      <ul class="num-list">
+        <li>Comparte tus respuestas con un compañero</li>
+        <li>Identifica qué saben en común</li>
+        <li>Formula 3 preguntas que quieres responder este módulo</li>
+      </ul>
+      <div class="callout warn" style="margin-top:20px">
+        <strong>Para el docente:</strong> Recoger las preguntas de los estudiantes y usarlas para orientar la sesión de hoy.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: QUÉ ES BUSCARV -->
+<div class="slide tema" id="s6">
+  <h2>¿Qué es una función de búsqueda?</h2>
+  <p>Imagina que tienes dos tablas en Excel. En una tabla están los <strong style="color:#1ab87a">productos</strong>, en otra los <strong style="color:#1ab87a">precios</strong>. Necesitas traer el precio automáticamente sin copiar manualmente.</p>
+  <div class="diagram" style="margin:30px 0">
+    <div class="box-d">
+      <p style="color:#6fa8dc;font-size:0.85em">Tabla Pedidos</p>
+      <p style="margin:8px 0">Cód: <strong>A001</strong></p>
+      <p>Cliente: Juan</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box-d highlight">
+      <p style="color:#1ab87a;font-size:0.85em">BUSCARV busca A001</p>
+      <p style="margin:8px 0;font-size:1.4em">🔍</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box-d">
+      <p style="color:#6fa8dc;font-size:0.85em">Tabla Productos</p>
+      <p style="margin:8px 0">A001 → Laptop</p>
+      <p>Precio: $2.500.000</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box-d highlight">
+      <p style="color:#1ab87a;font-size:0.85em">Resultado</p>
+      <p style="font-size:1.2em;margin-top:8px">$2.500.000</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>BUSCARV</strong> = <strong style="color:#fff">Buscar Verticalmente</strong>. Busca un valor en la primera columna de una tabla y devuelve un valor de otra columna de la misma fila.
+  </div>
+</div>
+
+<!-- SLIDE 7: SINTAXIS BUSCARV -->
+<div class="slide tema" id="s7">
+  <h2>BUSCARV — Sintaxis</h2>
+  <div class="formula-box">
+    <div class="fn-name">=BUSCARV(</div>
+    <div class="syntax">valor_buscado ; matriz_buscar_en ; indicador_columnas ; [ordenado])</div>
+  </div>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th>Argumento</th><th>Qué es</th></tr>
+        <tr><td class="col-key">valor_buscado</td><td>Lo que buscas (ej: código del producto)</td></tr>
+        <tr><td class="col-key">matriz_buscar_en</td><td>El rango donde está la tabla con los datos</td></tr>
+        <tr><td class="col-key">indicador_columnas</td><td>¿De qué columna quieres el resultado?</td></tr>
+        <tr><td class="col-key">[ordenado]</td><td>FALSO = coincidencia exacta ← siempre usa esto</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="code">
+        <span class="comment">= Busca el código A1 en la tabla</span><br>
+        <span class="comment">  y devuelve lo que hay en columna 3</span><br><br>
+        <span class="fn">=BUSCARV(</span><span class="arg">A1</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">Productos!A:D</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">3</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">FALSO</span><span class="fn">)</span>
+      </div>
+      <div class="callout warn" style="margin-top:12px"><strong>Clave:</strong> Siempre usa FALSO como último argumento. VERDADERO da resultados incorrectos en casi todos los casos empresariales.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: EJEMPLO PRÁCTICO BUSCARV -->
+<div class="slide practica" id="s8">
+  <h2>BUSCARV — Ejemplo Real: Facturación</h2>
+  <div class="cols">
+    <div>
+      <h3>Tabla Productos (Hoja "Catálogo")</h3>
+      <table>
+        <tr><th>Código</th><th>Producto</th><th>Precio</th><th>Stock</th></tr>
+        <tr><td>P001</td><td>Resma papel</td><td>$28.000</td><td>50</td></tr>
+        <tr><td>P002</td><td>Bolígrafo caja</td><td>$15.000</td><td>120</td></tr>
+        <tr><td>P003</td><td>Carpeta plástica</td><td>$8.500</td><td>80</td></tr>
+        <tr><td>P004</td><td>Tóner impresora</td><td>$185.000</td><td>15</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Tabla Pedidos — Columna D: Precio automático</h3>
+      <table>
+        <tr><th>Pedido</th><th>Código</th><th>Cant.</th><th>Precio</th></tr>
+        <tr><td>001</td><td>P003</td><td>5</td><td style="color:#1ab87a">← BUSCARV</td></tr>
+        <tr><td>002</td><td>P001</td><td>10</td><td style="color:#1ab87a">← BUSCARV</td></tr>
+      </table>
+      <div class="code" style="margin-top:16px">
+        <span class="comment">En celda D2 de la hoja Pedidos:</span><br>
+        <span class="fn">=BUSCARV(</span><span class="arg">B2</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">Catálogo!$A$2:$D$100</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">3</span>,<span class="arg">FALSO</span><span class="fn">)</span>
+      </div>
+      <div class="callout" style="margin-top:10px"><strong>Nota:</strong> El símbolo $ fija la tabla para que puedas arrastrar la fórmula sin que el rango cambie.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: ERRORES COMUNES BUSCARV -->
+<div class="slide error" id="s9">
+  <h2>Errores Frecuentes con BUSCARV</h2>
+  <div class="cols">
+    <div>
+      <div class="box red" style="margin-bottom:16px">
+        <h3>#N/A</h3>
+        <p>El valor buscado no existe en la primera columna de la tabla. Verifica que el código sea exactamente igual (mayúsculas, espacios, tipo de dato).</p>
+      </div>
+      <div class="box red" style="margin-bottom:16px">
+        <h3>#REF!</h3>
+        <p>El número de columna que indicaste es mayor que el número de columnas de la tabla.</p>
+      </div>
+      <div class="box red">
+        <h3>Resultado incorrecto</h3>
+        <p>Olvidaste poner FALSO al final. Con VERDADERO Excel hace coincidencia aproximada y puede devolver datos equivocados.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Cómo evitarlos:</h3>
+      <ul class="check-list">
+        <li>Usar TEXTO a TEXTO y NÚMERO a NÚMERO — no mezclar</li>
+        <li>Quitar espacios extra con =ESPACIOS()</li>
+        <li>Siempre colocar FALSO como 4° argumento</li>
+        <li>Fijar la tabla con $ para copiar sin errores</li>
+        <li>La clave de búsqueda DEBE estar en la PRIMERA columna de la tabla</li>
+      </ul>
+      <div class="callout warn" style="margin-top:20px">
+        <strong>Limitación de BUSCARV:</strong> Solo busca hacia la derecha. Si necesitas buscar hacia la izquierda, usa INDICE+COINCIDIR (lo veremos el Día 2).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: BUSCARH -->
+<div class="slide tema" id="s10">
+  <h2>BUSCARH — Búsqueda Horizontal</h2>
+  <p>BUSCARH hace lo mismo que BUSCARV, pero busca en la <strong style="color:#1ab87a">primera fila</strong> y devuelve el valor de una <strong style="color:#1ab87a">fila</strong> hacia abajo.</p>
+  <div class="diagram" style="margin:20px 0">
+    <div style="width:100%">
+      <table>
+        <tr style="background:#1a3a5c">
+          <th>Mes →</th>
+          <th style="color:#1ab87a">Enero ← busca aquí</th>
+          <th>Febrero</th>
+          <th>Marzo</th>
+        </tr>
+        <tr><td>Ventas</td><td style="color:#1ab87a">$12.000.000 ← devuelve esto</td><td>$14.000.000</td><td>$11.500.000</td></tr>
+        <tr><td>Gastos</td><td>$8.000.000</td><td>$9.000.000</td><td>$7.500.000</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="formula-box">
+      <div class="fn-name">=BUSCARH(</div>
+      <div class="syntax">valor_buscado ; matriz ; indicador_filas ; [ordenado])</div>
+    </div>
+    <div>
+      <div class="code">
+        <span class="comment">Busca "Enero" en fila 1,</span><br>
+        <span class="comment">devuelve lo de la fila 2</span><br><br>
+        <span class="fn">=BUSCARH(</span><span class="str">"Enero"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">A1:D3</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">2</span>,<span class="arg">FALSO</span><span class="fn">)</span>
+      </div>
+    </div>
+  </div>
+  <div class="callout tip" style="margin-top:10px"><strong>Cuándo usar BUSCARH:</strong> Cuando tus datos están organizados en columnas por período (meses, trimestres) y las categorías van en filas.</div>
+</div>
+
+<!-- SLIDE 11: BUSCARV vs BUSCARH -->
+<div class="slide tema" id="s11">
+  <h2>BUSCARV vs BUSCARH — ¿Cuándo usar cada uno?</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>📋 Usa BUSCARV cuando...</h3>
+      <ul>
+        <li>Tu tabla de datos crece hacia <strong style="color:#1ab87a">abajo</strong> (más filas)</li>
+        <li>Tienes listas de: productos, empleados, clientes, proveedores</li>
+        <li>Buscas por código o identificador en la primera columna</li>
+        <li>Es el 90% de los casos en empresas</li>
+      </ul>
+      <br>
+      <p><em style="color:#6fa8dc">Ejemplo:</em> Lista de 500 productos → buscar precio por código</p>
+    </div>
+    <div class="box">
+      <h3>📊 Usa BUSCARH cuando...</h3>
+      <ul>
+        <li>Tu tabla crece hacia la <strong style="color:#1ab87a">derecha</strong> (más columnas)</li>
+        <li>Tienes meses, trimestres o categorías en las columnas</li>
+        <li>Buscas por encabezado de columna</li>
+        <li>Es menos común pero muy útil en presupuestos</li>
+      </ul>
+      <br>
+      <p><em style="color:#6fa8dc">Ejemplo:</em> Presupuesto por meses → obtener valor de mes específico</p>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:20px">
+    <strong>Próxima clase:</strong> Aprenderemos INDICE+COINCIDIR, que hace las dos cosas y mucho más. Es más poderoso que ambos.
+  </div>
+</div>
+
+<!-- SLIDE 12: ACTIVIDAD PRÁCTICA -->
+<div class="slide practica" id="s12">
+  <h2>Actividad Práctica — 60 min</h2>
+  <div class="callout tip"><strong>Caso:</strong> Eres auxiliar en ADMIN CARIBE S.A.S. Necesitas completar el sistema de pedidos usando BUSCARV.</div>
+  <div class="cols">
+    <div>
+      <h3>Lo que debes construir:</h3>
+      <ul class="num-list">
+        <li>Crea la tabla "Catálogo" con: código, producto, categoría, precio unitario (mínimo 10 productos de papelería o suministros)</li>
+        <li>Crea la hoja "Pedidos" con: N° pedido, código, cantidad, precio (con BUSCARV), total</li>
+        <li>Ingresa 8 pedidos con diferentes productos</li>
+        <li>Calcula el total (precio × cantidad)</li>
+        <li>Al final suma todos los totales</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Criterios de éxito:</h3>
+      <ul class="check-list">
+        <li>La fórmula BUSCARV funciona sin errores #N/A</li>
+        <li>Al cambiar el código, el precio se actualiza solo</li>
+        <li>La tabla del catálogo está fija con $</li>
+        <li>Los totales cuadran</li>
+      </ul>
+      <div class="callout warn" style="margin-top:20px">
+        <strong>Tip:</strong> Primero crea el catálogo, luego los pedidos. Escribe el BUSCARV en la primera fila y arrástrala hacia abajo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: BUENAS PRÁCTICAS -->
+<div class="slide resumen" id="s13">
+  <h2>Buenas Prácticas en Funciones de Búsqueda</h2>
+  <div class="cols">
+    <div>
+      <h3>Siempre haz esto:</h3>
+      <ul class="check-list">
+        <li>Usa $ para fijar las tablas de búsqueda</li>
+        <li>Nombra tus tablas (Insertar → Tabla) para referencias más claras</li>
+        <li>Documenta las fórmulas con comentarios</li>
+        <li>Verifica que los tipos de datos coincidan</li>
+        <li>Protege la hoja del catálogo para que nadie la modifique</li>
+        <li>Guarda una copia del archivo antes de hacer cambios masivos</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Nunca hagas esto:</h3>
+      <ul class="x-list">
+        <li>Copiar y pegar los precios manualmente (se desactualiza)</li>
+        <li>Dejar VERDADERO en el 4° argumento de BUSCARV</li>
+        <li>No fijar la tabla con $ (si arrastras se descuadra)</li>
+        <li>Mezclar texto con números en la columna clave</li>
+        <li>Buscar en una columna que no sea la primera de la tabla</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: IMPACTO DE IA -->
+<div class="slide tema" id="s14">
+  <h2>Excel + Inteligencia Artificial en 2026</h2>
+  <div class="icon-row">
+    <div class="icon-card">
+      <div class="icon">🤖</div>
+      <strong>Microsoft Copilot</strong>
+      <p>Le dices en texto natural: "busca el precio del producto P004" y Copilot escribe el BUSCARV por ti</p>
+    </div>
+    <div class="icon-card">
+      <div class="icon">💬</div>
+      <strong>ChatGPT</strong>
+      <p>Explica fórmulas, genera ejemplos, corrige errores en tus fórmulas con solo describir el problema</p>
+    </div>
+    <div class="icon-card">
+      <div class="icon">📊</div>
+      <strong>Power BI</strong>
+      <p>Evolución del dashboard de Excel. Conecta múltiples tablas automáticamente sin necesidad de BUSCARV</p>
+    </div>
+    <div class="icon-card">
+      <div class="icon">☁️</div>
+      <strong>Google Sheets</strong>
+      <p>Versión en la nube con BUSCARV idéntico. Permite colaboración en tiempo real</p>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:10px">
+    <strong>Reflexión:</strong> ¿La IA reemplaza saber Excel? No. Si no entiendes BUSCARV, no podrás verificar si lo que hace la IA está correcto. La IA es un asistente, tú eres el experto.
+  </div>
+</div>
+
+<!-- SLIDE 15: RESUMEN Y TAREA -->
+<div class="slide resumen" id="s15">
+  <h2>Resumen del Día 1</h2>
+  <div class="cols">
+    <div>
+      <h3>Lo que vimos hoy:</h3>
+      <ul class="check-list">
+        <li>Panorama completo del Módulo 11</li>
+        <li>Por qué Excel avanzado = empleabilidad</li>
+        <li>BUSCARV: sintaxis, argumentos, ejemplo real</li>
+        <li>BUSCARH: cuándo y cómo usarlo</li>
+        <li>Errores comunes y cómo evitarlos</li>
+        <li>Práctica: sistema de pedidos con catálogo</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Para la próxima clase:</h3>
+      <div class="box yellow">
+        <h3>Tarea autónoma</h3>
+        <ul>
+          <li>Termina el ejercicio de pedidos si no lo completaste</li>
+          <li>Busca en YouTube: "BUSCARV Excel en español" — mira un video de 10 min</li>
+          <li>Prepara 2 preguntas sobre BUSCARV o BUSCARH</li>
+          <li>Piensa: ¿en qué trabajo o empresa de tu familia se podría usar BUSCARV?</li>
+        </ul>
+      </div>
+      <div class="callout" style="margin-top:14px">
+        <strong>Próximo Día 2:</strong> INDICE + COINCIDIR (más poderoso que BUSCARV) + SUMAR.SI + CONTAR.SI
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: PREGUNTAS DE REFLEXIÓN -->
+<div class="slide tema" id="s16">
+  <h2>Preguntas de Reflexión</h2>
+  <div class="cols">
+    <div>
+      <div class="box" style="margin-bottom:16px">
+        <h3>🤔 Reflexiona...</h3>
+        <p>¿De qué manera el conocimiento de BUSCARV y funciones de búsqueda te hace un auxiliar más valioso en el mercado laboral de Barranquilla?</p>
+      </div>
+      <div class="box">
+        <h3>🌐 Contexto digital</h3>
+        <p>¿Cómo cambiará la IA la forma en que los auxiliares usan funciones como BUSCARV en los próximos 5 años? ¿Qué rol tendrá el auxiliar?</p>
+      </div>
+    </div>
+    <div>
+      <div class="box" style="margin-bottom:16px">
+        <h3>💼 Aplicación laboral</h3>
+        <p>Menciona 3 situaciones concretas en empresas de Barranquilla donde BUSCARV ahorraría tiempo y reduciría errores humanos.</p>
+      </div>
+      <div class="callout warn">
+        <strong>Para debatir:</strong> ¿Es mejor aprender BUSCARV o directamente aprender Power BI? ¿Por qué uno no reemplaza al otro?
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 16</div>
+<div class="nav-info">← → para navegar</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+function show(n) {
+  slides[cur].classList.remove('active');
+  cur = (n + total) % total;
+  slides[cur].classList.add('active');
+  document.getElementById('pb').style.width = ((cur+1)/total*100)+'%';
+  document.getElementById('sc').textContent = (cur+1)+' / '+total;
+}
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') show(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp') show(cur-1);
+  if(e.key==='Home') show(0);
+  if(e.key==='End') show(total-1);
+});
+document.addEventListener('click', e => { if(e.clientX > window.innerWidth/2) show(cur+1); else show(cur-1); });
+show(0);
+</script>
+</body>
+</html>

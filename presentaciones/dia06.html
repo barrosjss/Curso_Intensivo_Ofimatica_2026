@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 6 — Macros y Dashboard Ejecutivo | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#0d2200 0%,#002d2a 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#030d08}
+.slide.resumen{background:linear-gradient(135deg,#030d08 0%,#0d1b2a 100%)}
+h1.titulo{font-size:2.8em;color:#fff;margin-bottom:16px;line-height:1.2}
+h1.titulo span{color:#4ade80}
+.subtitulo{font-size:1.2em;color:#86efac;margin-bottom:30px}
+h2{font-size:1.9em;color:#4ade80;margin-bottom:26px;border-bottom:2px solid #0a3020;padding-bottom:10px}
+h3{font-size:1.3em;color:#86efac;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#4ade80;color:#002000;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px}
+.box{background:#0a1a10;border-radius:10px;padding:22px;border-left:4px solid #4ade80}
+.box.blue{border-left-color:#6fa8dc;background:#0a1a2a}
+.box.yellow{border-left-color:#f0b429;background:#1a1500}
+.box.red{border-left-color:#e05050;background:#2a1010}
+.box.purple{border-left-color:#c084fc;background:#1a0a30}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.callout{background:#0a1a10;border:1px solid #4ade80;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.warn{background:#1a1500;border-color:#f0b429}
+.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
+.callout.red{background:#2a1010;border-color:#e05050}
+.callout strong{color:#4ade80}
+.callout.warn strong{color:#f0b429}
+.callout.tip strong{color:#6fa8dc}
+.callout.red strong{color:#e05050}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#4ade80;font-weight:700}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#4ade80;color:#002000;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+.code{background:#020a05;border:1px solid #0a3020;border-radius:8px;padding:18px;font-family:'Courier New',monospace;font-size:0.95em;color:#79c0ff;margin:12px 0;line-height:1.8}
+.code .fn{color:#4ade80}
+.code .kw{color:#ff7b72}
+.code .comment{color:#8b949e}
+.code .str{color:#a5d6ff}
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
+.kpi-card{background:#0a1a10;border:1px solid #0a3020;border-radius:10px;padding:20px;text-align:center;border-top:3px solid #4ade80}
+.kpi-card .value{font-size:1.8em;color:#4ade80;font-weight:700}
+.kpi-card .label{font-size:0.82em;color:#60a070;margin-top:4px}
+.kpi-card.blue{border-top-color:#6fa8dc}
+.kpi-card.blue .value{color:#6fa8dc}
+.kpi-card.yellow{border-top-color:#f0b429}
+.kpi-card.yellow .value{color:#f0b429}
+.kpi-card.red{border-top-color:#e05050}
+.kpi-card.red .value{color:#e05050}
+/* Dashboard mockup */
+.dash-mock{background:#020a05;border:1px solid #0a3020;border-radius:10px;padding:16px}
+.dash-header{background:#0a3020;padding:10px 14px;border-radius:6px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.dash-header span{color:#86efac;font-weight:700}
+.dash-header small{color:#4ade80;font-size:0.8em}
+.dash-body{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.dash-chart{background:#030f07;border:1px solid #0a3020;border-radius:6px;height:80px;display:flex;align-items:flex-end;padding:10px;gap:8px}
+.dash-bar{background:#4ade80;border-radius:2px 2px 0 0;min-width:20px}
+.dash-table{background:#030f07;border:1px solid #0a3020;border-radius:6px;padding:8px;font-size:0.75em}
+.dash-table table{font-size:0.85em}
+.dash-table th{background:#0a3020;padding:4px 8px}
+.dash-table td{padding:4px 8px}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#0a3020;color:#86efac;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #0a1a10;color:#c8d8e8}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#0a3020}
+.progress-bar{height:100%;background:linear-gradient(90deg,#4ade80,#86efac);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#2a5a3a;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#2a5a3a;font-size:0.82em}
+</style>
+</head>
+<body>
+
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 6 DE 12</span>
+  <h1 class="titulo">Macros y <span>Dashboard Ejecutivo</span></h1>
+  <p class="subtitulo">Grabar macros · KPIs · Diseño de dashboard · Protección de datos</p>
+  <p style="color:#1a4a2a;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Cierre Excel Avanzado</p>
+</div>
+
+<div class="slide tema">
+  <h2>¿Qué es una Macro?</h2>
+  <div class="cols">
+    <div>
+      <p>Una macro es una <strong style="color:#4ade80">secuencia de acciones grabadas</strong> que Excel puede repetir automáticamente con un solo clic o atajo de teclado.</p>
+      <div class="callout">
+        <strong>Analogía:</strong> Como grabar un video de lo que haces en Excel. Cuando lo reproduces, Excel hace exactamente lo mismo en segundos.
+      </div>
+      <div class="box" style="margin-top:14px">
+        <h3>¿Para qué se usan en empresas?</h3>
+        <ul>
+          <li>Dar formato a reportes mensuales automáticamente</li>
+          <li>Limpiar datos importados del sistema</li>
+          <li>Generar un reporte en PDF con un botón</li>
+          <li>Enviar correos desde Excel (Outlook)</li>
+          <li>Actualizar y imprimir múltiples hojas</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3>Tipos de macros que aprenderemos:</h3>
+      <div class="box blue" style="margin-bottom:14px">
+        <h3>Macros Grabadas</h3>
+        <p>Graba tus acciones en Excel. No requiere programar. Para tareas repetitivas simples.</p>
+      </div>
+      <div class="box purple" style="margin-bottom:14px">
+        <h3>Macros con VBA básico</h3>
+        <p>Un poco de código para hacer la macro más inteligente. Veremos lo esencial para el auxiliar.</p>
+      </div>
+      <div class="callout warn">
+        <strong>Prerrequisito:</strong> Activa la pestaña "Desarrollador" en Excel: Archivo → Opciones → Personalizar cinta → Activar "Desarrollador".
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Grabar una Macro — Paso a Paso</h2>
+  <div class="cols">
+    <div>
+      <div class="num-list">
+        <ul>
+          <li>Pestaña "Desarrollador" → "Grabar macro"</li>
+          <li>Asigna nombre (sin espacios: "FormatoReporte"), atajo (Ctrl+Shift+R) y descripción</li>
+          <li>Elige "Este libro" como ubicación</li>
+          <li>Clic en Aceptar — ¡ya está grabando!</li>
+          <li>Ejecuta las acciones que quieres automatizar</li>
+          <li>"Detener grabación" cuando termines</li>
+          <li>Prueba: presiona Ctrl+Shift+R → las acciones se repiten</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3>Ejemplo — Macro "FormatoReporte":</h3>
+      <p>Acciones grabadas:</p>
+      <div class="code">
+        <span class="comment">' Lo que hace la macro automáticamente:</span><br>
+        <span class="fn">Sub</span> FormatoReporte()<br>
+        &nbsp;&nbsp;<span class="comment">' Pone negrita a la fila 1</span><br>
+        &nbsp;&nbsp;Rows(<span class="str">"1:1"</span>).Font.Bold = <span class="kw">True</span><br>
+        &nbsp;&nbsp;<span class="comment">' Fondo azul marino en encabezados</span><br>
+        &nbsp;&nbsp;Rows(<span class="str">"1:1"</span>).Interior.Color = <span class="str">RGB(0,70,127)</span><br>
+        &nbsp;&nbsp;<span class="comment">' Autoajusta columnas</span><br>
+        &nbsp;&nbsp;Cells.EntireColumn.AutoFit<br>
+        <span class="fn">End Sub</span>
+      </div>
+      <div class="callout" style="margin-top:10px"><strong>Guardar como:</strong> Archivo con macros debe guardarse en formato .xlsm (no .xlsx). Excel te preguntará automáticamente.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>VBA Básico — Solo lo Esencial</h2>
+  <p>No necesitas ser programador. Con estos 5 conceptos básicos puedes hacer macros útiles para el trabajo administrativo.</p>
+  <div class="cols">
+    <div>
+      <div class="code">
+        <span class="comment">' Estructura de una macro</span><br>
+        <span class="fn">Sub</span> NombreMacro()<br>
+        &nbsp;&nbsp;<span class="comment">' Aquí van las instrucciones</span><br>
+        <span class="fn">End Sub</span><br><br>
+        <span class="comment">' Seleccionar una celda</span><br>
+        Range(<span class="str">"A1"</span>).Select<br><br>
+        <span class="comment">' Escribir un valor</span><br>
+        Range(<span class="str">"A1"</span>).Value = <span class="str">"Total:"</span><br><br>
+        <span class="comment">' Hacer negrita</span><br>
+        Range(<span class="str">"A1"</span>).Font.Bold = <span class="kw">True</span><br><br>
+        <span class="comment">' Mostrar mensaje</span><br>
+        MsgBox <span class="str">"¡Reporte generado!"</span>
+      </div>
+    </div>
+    <div>
+      <div class="code">
+        <span class="comment">' Bucle — repetir acción</span><br>
+        <span class="fn">Dim</span> i <span class="fn">As Integer</span><br>
+        <span class="fn">For</span> i = 1 <span class="fn">To</span> 10<br>
+        &nbsp;&nbsp;Cells(i, 1).Value = i * 100<br>
+        <span class="fn">Next</span> i<br><br>
+        <span class="comment">' Condición — si/entonces</span><br>
+        <span class="fn">If</span> Range(<span class="str">"B2"</span>).Value > 1000000 <span class="fn">Then</span><br>
+        &nbsp;&nbsp;Range(<span class="str">"B2"</span>).Interior.Color = <span class="str">RGB(0,200,0)</span><br>
+        <span class="fn">Else</span><br>
+        &nbsp;&nbsp;Range(<span class="str">"B2"</span>).Interior.Color = <span class="str">RGB(200,0,0)</span><br>
+        <span class="fn">End If</span>
+      </div>
+      <div class="callout tip" style="margin-top:10px"><strong>Editar macros:</strong> Desarrollador → Visual Basic → busca el módulo con tu macro. El editor resalta el código por colores.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Dashboard Ejecutivo — ¿Qué es un KPI?</h2>
+  <p>KPI = Key Performance Indicator (Indicador Clave de Rendimiento). Son las métricas más importantes para tomar decisiones.</p>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="value">$120M</div>
+      <div class="label">Ventas Totales<br>Trimestre</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="value">847</div>
+      <div class="label">Pedidos<br>Procesados</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="value">$141.7K</div>
+      <div class="label">Ticket<br>Promedio</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="value">3.2%</div>
+      <div class="label">Cartera<br>Vencida</div>
+    </div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>KPIs para un auxiliar administrativo:</h3>
+      <ul class="check-list">
+        <li>Total de ingresos / ventas del período</li>
+        <li>Número de clientes activos vs inactivos</li>
+        <li>Días promedio de cartera (cobro)</li>
+        <li>Porcentaje de pedidos entregados a tiempo</li>
+        <li>Costo operativo como % de ventas</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Principios de un buen dashboard:</h3>
+      <ul class="check-list">
+        <li>Máximo 5-7 KPIs en la pantalla principal</li>
+        <li>El dato más importante: más grande y prominente</li>
+        <li>Colores con semántica: verde=bien, rojo=alerta</li>
+        <li>Todo debe verse sin scroll</li>
+        <li>Actualizable con un clic</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Protección de Datos y Hojas</h2>
+  <div class="cols">
+    <div>
+      <h3>Proteger una hoja:</h3>
+      <ul class="num-list">
+        <li>Pestaña "Revisar" → "Proteger hoja"</li>
+        <li>Establece una contraseña</li>
+        <li>Define qué pueden hacer los usuarios (solo seleccionar, no editar)</li>
+        <li>Aceptar. La hoja queda bloqueada.</li>
+      </ul>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Ley 1581 de 2012:</strong> Los datos personales (nombres, cédulas, salarios) en archivos de Excel compartidos deben protegerse. No envíes archivos con datos de empleados sin contraseña.
+      </div>
+    </div>
+    <div>
+      <h3>Tipos de protección en Excel:</h3>
+      <table>
+        <tr><th>Nivel</th><th>Cómo</th><th>Qué protege</th></tr>
+        <tr><td>Celda</td><td>Formato → Proteger celda (bloqueada)</td><td>Fórmulas individuales</td></tr>
+        <tr><td>Hoja</td><td>Revisar → Proteger hoja</td><td>Toda la hoja</td></tr>
+        <tr><td>Libro</td><td>Revisar → Proteger libro</td><td>Estructura de hojas</td></tr>
+        <tr><td>Archivo</td><td>Archivo → Info → Cifrar con contraseña</td><td>Todo el archivo</td></tr>
+      </table>
+      <div class="callout tip" style="margin-top:10px"><strong>Buena práctica:</strong> En dashboards, protege las hojas de datos y fórmulas. Deja visible y sin protección solo la hoja del dashboard. El usuario ve los resultados, no puede romper las fórmulas.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide practica">
+  <h2>Actividad Final — Dashboard Completo 70 min</h2>
+  <div class="callout tip"><strong>Entregable final del módulo Excel:</strong> Dashboard ejecutivo de ADMIN CARIBE S.A.S. — la evidencia principal del portafolio.</div>
+  <div class="cols">
+    <div>
+      <h3>Estructura del archivo:</h3>
+      <ul class="num-list">
+        <li><strong>Hoja "Datos":</strong> Base de ventas con 50+ registros (protegida)</li>
+        <li><strong>Hoja "Tablas":</strong> 3 tablas dinámicas (protegida)</li>
+        <li><strong>Hoja "Dashboard":</strong> Los 4 KPIs + 3 gráficos + 2 slicers (visible, sin edición)</li>
+        <li><strong>Macro "ActualizarTodo":</strong> Actualiza todas las tablas con un botón</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Criterios de evaluación:</h3>
+      <ul class="check-list">
+        <li>Los 4 KPIs están correctamente calculados</li>
+        <li>Los gráficos tienen título y formato profesional</li>
+        <li>Los slicers filtran todos los gráficos simultáneamente</li>
+        <li>La macro "ActualizarTodo" funciona</li>
+        <li>La hoja "Datos" está protegida con contraseña</li>
+        <li>El dashboard cabe en una sola pantalla</li>
+      </ul>
+      <div class="callout" style="margin-top:10px">
+        <strong>Nombre del archivo:</strong> Dashboard_AdminCaribe_TuNombre.xlsm — Este archivo va al portafolio y representa el 20% de la nota del módulo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide resumen">
+  <h2>Cierre del Bloque Excel — Días 1 al 6</h2>
+  <div class="cols">
+    <div>
+      <h3>Todo lo que dominamos:</h3>
+      <ul class="check-list">
+        <li>BUSCARV, BUSCARH, INDICE+COINCIDIR</li>
+        <li>SUMAR.SI, CONTAR.SI, PROMEDIO.SI y .CONJUNTO</li>
+        <li>Funciones financieras: PAGO, VA, VF, TASA, NPER</li>
+        <li>Funciones de texto y fórmulas matriciales</li>
+        <li>Tablas dinámicas: creación y configuración</li>
+        <li>Gráficos dinámicos, slicers, líneas de tiempo</li>
+        <li>Power Query básico</li>
+        <li>Macros: grabar y VBA básico</li>
+        <li>Diseño de dashboard con KPIs</li>
+        <li>Protección de datos</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Próxima unidad — Días 7 y 8:</h3>
+      <div class="box">
+        <h3>PowerPoint y Presentaciones Ejecutivas</h3>
+        <ul>
+          <li>Diseño ejecutivo profesional</li>
+          <li>Branding corporativo y temas</li>
+          <li>Comunicación visual: Gestalt, colores, tipografía</li>
+          <li>Canva y herramientas alternativas</li>
+          <li>IA para crear presentaciones</li>
+        </ul>
+      </div>
+      <div class="callout warn" style="margin-top:14px"><strong>Recordatorio:</strong> Entrega el Dashboard para la próxima clase. Será revisado en el Día 12 junto con el portafolio completo.</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 9</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>

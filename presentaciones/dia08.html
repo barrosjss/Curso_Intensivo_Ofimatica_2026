@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 8 — Comunicación Visual, Canva e IA | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#0a1a30 0%,#001a2a 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#051020}
+.slide.resumen{background:linear-gradient(135deg,#051020 0%,#0d1b2a 100%)}
+h1.titulo{font-size:2.8em;color:#fff;margin-bottom:16px;line-height:1.2}
+h1.titulo span{color:#38bdf8}
+.subtitulo{font-size:1.2em;color:#7dd3fc;margin-bottom:30px}
+h2{font-size:1.9em;color:#38bdf8;margin-bottom:26px;border-bottom:2px solid #0a2030;padding-bottom:10px}
+h3{font-size:1.3em;color:#7dd3fc;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#38bdf8;color:#001820;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px}
+.box{background:#0a1a2a;border-radius:10px;padding:22px;border-left:4px solid #38bdf8}
+.box.green{border-left-color:#1ab87a;background:#0a2a1a}
+.box.purple{border-left-color:#c084fc;background:#1a0a30}
+.box.orange{border-left-color:#fb923c;background:#1a1020}
+.box.yellow{border-left-color:#f0b429;background:#1a1500}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.callout{background:#0a1a2a;border:1px solid #38bdf8;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.green{background:#0a2a1a;border-color:#1ab87a}
+.callout.warn{background:#1a1500;border-color:#f0b429}
+.callout.tip{background:#1a0a30;border-color:#c084fc}
+.callout strong{color:#38bdf8}
+.callout.green strong{color:#1ab87a}
+.callout.warn strong{color:#f0b429}
+.callout.tip strong{color:#c084fc}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#1ab87a;font-weight:700}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#38bdf8;color:#001820;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#0a2030;color:#7dd3fc;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #0a1a2a;color:#c8d8e8}
+/* Gestalt cards */
+.gestalt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:16px 0}
+.gestalt-card{background:#0a1a2a;border-radius:10px;padding:16px;text-align:center;border-top:2px solid #38bdf8}
+.gestalt-card h4{color:#38bdf8;font-size:0.95em;margin-bottom:8px}
+.gestalt-card p{font-size:0.8em;color:#a0b8cc;margin:0;line-height:1.4}
+.gestalt-demo{height:40px;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:8px}
+/* Tool comparison */
+.tool-card{background:#0a1a2a;border-radius:10px;padding:18px;border:1px solid #1a3040;margin-bottom:12px}
+.tool-card h4{font-size:1em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.tool-badge{padding:3px 10px;border-radius:12px;font-size:0.75em;font-weight:700}
+.badge-free{background:#0a3020;color:#1ab87a;border:1px solid #1ab87a}
+.badge-paid{background:#1a1500;color:#f0b429;border:1px solid #f0b429}
+.badge-freemium{background:#0a1a2a;color:#38bdf8;border:1px solid #38bdf8}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#0a2030}
+.progress-bar{height:100%;background:linear-gradient(90deg,#38bdf8,#7dd3fc);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#1a3a50;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#1a3a50;font-size:0.82em}
+</style>
+</head>
+<body>
+
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 8 DE 12</span>
+  <h1 class="titulo">Comunicación Visual<br><span>Canva e IA</span></h1>
+  <p class="subtitulo">Gestalt · Animaciones · Canva · Herramientas alternativas · IA para presentar</p>
+  <p style="color:#0a2030;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Cierre Unidad Presentaciones</p>
+</div>
+
+<div class="slide tema">
+  <h2>Leyes de Gestalt — La Ciencia del Diseño</h2>
+  <p>La psicología de la percepción visual explica cómo el cerebro organiza lo que ve. Aplicarlas hace que tu diseño se entienda más rápido.</p>
+  <div class="gestalt-grid">
+    <div class="gestalt-card">
+      <div class="gestalt-demo">
+        <div style="width:12px;height:12px;background:#38bdf8;border-radius:50%"></div>
+        <div style="width:12px;height:12px;background:#38bdf8;border-radius:50%"></div>
+        <div style="width:12px;height:12px;background:#38bdf8;border-radius:50%"></div>
+        <div style="width:24px"></div>
+        <div style="width:12px;height:12px;background:#7dd3fc;border-radius:50%"></div>
+        <div style="width:12px;height:12px;background:#7dd3fc;border-radius:50%"></div>
+      </div>
+      <h4>PROXIMIDAD</h4>
+      <p>Elementos cercanos parecen relacionados. Agrupa lo que va junto.</p>
+    </div>
+    <div class="gestalt-card">
+      <div class="gestalt-demo">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;gap:3px"><div style="width:10px;height:10px;background:#38bdf8;border-radius:50%"></div><div style="width:10px;height:10px;background:#38bdf8;border-radius:50%"></div><div style="width:10px;height:10px;background:#38bdf8;border-radius:50%"></div></div>
+          <div style="display:flex;gap:3px"><div style="width:10px;height:10px;background:#c084fc;border-radius:50%"></div><div style="width:10px;height:10px;background:#c084fc;border-radius:50%"></div><div style="width:10px;height:10px;background:#c084fc;border-radius:50%"></div></div>
+        </div>
+      </div>
+      <h4>SIMILITUD</h4>
+      <p>Elementos iguales parecen parte del mismo grupo aunque no estén cerca.</p>
+    </div>
+    <div class="gestalt-card">
+      <div class="gestalt-demo">
+        <div style="border:1px dashed #38bdf8;border-radius:4px;padding:4px 8px;display:flex;gap:4px">
+          <div style="width:8px;height:8px;background:#38bdf8;border-radius:50%"></div>
+          <div style="width:8px;height:8px;background:#38bdf8;border-radius:50%"></div>
+        </div>
+        <div style="margin-left:6px;display:flex;gap:4px">
+          <div style="width:8px;height:8px;background:#7dd3fc;border-radius:50%"></div>
+          <div style="width:8px;height:8px;background:#7dd3fc;border-radius:50%"></div>
+        </div>
+      </div>
+      <h4>CIERRE</h4>
+      <p>El cerebro completa formas incompletas. Un borde crea un grupo.</p>
+    </div>
+    <div class="gestalt-card">
+      <div class="gestalt-demo">
+        <div style="width:60px;height:2px;background:linear-gradient(90deg,#38bdf8 0%,transparent 100%)"></div>
+      </div>
+      <h4>CONTINUIDAD</h4>
+      <p>Los ojos siguen líneas y curvas. Usa guías visuales para dirigir la mirada.</p>
+    </div>
+    <div class="gestalt-card">
+      <div class="gestalt-demo">
+        <div style="width:30px;height:30px;background:#0a2030;border-radius:50%;display:flex;align-items:center;justify-content:center">
+          <div style="width:14px;height:14px;background:#38bdf8;border-radius:50%"></div>
+        </div>
+      </div>
+      <h4>FIGURA-FONDO</h4>
+      <p>Siempre hay un elemento principal y un fondo. El contraste define cuál es cuál.</p>
+    </div>
+    <div class="gestalt-card">
+      <div class="gestalt-demo" style="font-size:0.8em;color:#38bdf8;flex-direction:column;gap:2px">
+        <div>← Centro →</div>
+        <div style="font-size:0.7em;color:#7dd3fc">Simetría visual</div>
+      </div>
+      <h4>SIMETRÍA</h4>
+      <p>Diseños simétricos se perciben como más ordenados, profesionales y confiables.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Animaciones y Transiciones — Menos es Más</h2>
+  <div class="cols">
+    <div>
+      <h3>Transiciones recomendadas:</h3>
+      <table>
+        <tr><th>Transición</th><th>Cuándo usar</th></tr>
+        <tr><td style="color:#38bdf8">Desvanecer (Fade)</td><td>Predeterminada para casi todo. Elegante.</td></tr>
+        <tr><td style="color:#38bdf8">Empujar (Push)</td><td>Para indicar progreso o siguiente paso.</td></tr>
+        <tr><td style="color:#38bdf8">Revelar</td><td>Para slides tipo "antes/después".</td></tr>
+      </table>
+      <h3 style="margin-top:16px">Animaciones de objetos:</h3>
+      <ul class="check-list">
+        <li>Aparecer (Appear) — Simple, no distrae</li>
+        <li>Desvanecer — Para texto que aparece gradualmente</li>
+        <li>Barrido — Para gráficos que se construyen</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Errores de animación (a evitar):</h3>
+      <ul class="x-list">
+        <li>Letras que dan vueltas o botan</li>
+        <li>Transición diferente en cada slide</li>
+        <li>Sonidos con las animaciones</li>
+        <li>Más de 2 animaciones por slide</li>
+        <li>Animaciones lentas que alargan la clase</li>
+      </ul>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Regla de oro:</strong> Si la animación atrae más atención que el contenido, está mal. Las animaciones deben APOYAR el mensaje, no convertirse en el espectáculo.
+      </div>
+      <div class="callout green" style="margin-top:10px">
+        <strong>Caso de uso válido:</strong> Mostrar pasos de un proceso uno a uno. Clic = aparece el siguiente paso. Mantienes la atención del estudiante.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Canva — Diseño Profesional Sin Ser Diseñador</h2>
+  <div class="cols">
+    <div>
+      <p>Canva es una herramienta web que permite crear presentaciones, flyers, informes y más con arrastrar y soltar. No requiere conocimientos de diseño.</p>
+      <div class="callout"><strong>Ventaja clave:</strong> Miles de plantillas profesionales. Empieza desde una plantilla y personalízala en minutos.</div>
+      <h3 style="margin-top:14px">Qué hacer en Canva:</h3>
+      <ul class="check-list">
+        <li>Presentaciones (puede exportar a .pptx)</li>
+        <li>Infografías para explicar procesos</li>
+        <li>Flyers para eventos empresariales</li>
+        <li>Posts para redes sociales de la empresa</li>
+        <li>Certificados y diplomas</li>
+        <li>CV profesional</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Canva vs PowerPoint:</h3>
+      <table>
+        <tr><th>Característica</th><th>Canva</th><th>PowerPoint</th></tr>
+        <tr><td>Precio</td><td style="color:#1ab87a">Gratis (básico)</td><td style="color:#f0b429">Pago (Office)</td></tr>
+        <tr><td>Plantillas</td><td style="color:#1ab87a">Miles, modernas</td><td>Pocas, básicas</td></tr>
+        <tr><td>Colaboración</td><td style="color:#1ab87a">Tiempo real online</td><td>Limitado</td></tr>
+        <tr><td>Personalización</td><td>Media</td><td style="color:#1ab87a">Alta (VBA)</td></tr>
+        <tr><td>Sin internet</td><td style="color:#e05050">No funciona</td><td style="color:#1ab87a">Sí funciona</td></tr>
+        <tr><td>Datos de Excel</td><td style="color:#e05050">No directo</td><td style="color:#1ab87a">Vinculado</td></tr>
+      </table>
+      <div class="callout tip" style="margin-top:10px"><strong>Recomendación:</strong> Usa PowerPoint para presentaciones de datos y análisis. Usa Canva para diseño creativo, flyers, y cuando no tienes Office disponible.</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Herramientas Alternativas de Presentación</h2>
+  <div class="cols3">
+    <div class="tool-card">
+      <h4>Google Slides <span class="tool-badge badge-free">GRATIS</span></h4>
+      <ul>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Colaboración en tiempo real</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Acceso desde cualquier dispositivo</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Exporta a .pptx y PDF</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Integración con Drive</li>
+      </ul>
+      <p style="font-size:0.8em;color:#38bdf8;margin-top:8px">Ideal para trabajo en equipo</p>
+    </div>
+    <div class="tool-card">
+      <h4>Prezi <span class="tool-badge badge-freemium">FREEMIUM</span></h4>
+      <ul>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Presentación no lineal (zoom)</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Muy visual e interactivo</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Impresiona a clientes</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Curva de aprendizaje media</li>
+      </ul>
+      <p style="font-size:0.8em;color:#f0b429;margin-top:8px">Ideal para pitch a clientes</p>
+    </div>
+    <div class="tool-card">
+      <h4>Gamma App <span class="tool-badge badge-freemium">FREEMIUM</span></h4>
+      <ul>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">IA genera la presentación completa</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Solo describes el tema</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Diseño moderno automático</li>
+        <li style="margin-left:16px;font-size:0.9em;color:#c8d8e8">Exporta a .pptx</li>
+      </ul>
+      <p style="font-size:0.8em;color:#c084fc;margin-top:8px">La más rápida con IA</p>
+    </div>
+  </div>
+  <div class="callout green" style="margin-top:10px"><strong>Dato 2025:</strong> Gamma App y Beautiful.ai permiten generar una presentación de 15 slides en menos de 2 minutos describiendo el tema. El auxiliar administrativo moderno las conoce y las usa.</div>
+</div>
+
+<div class="slide tema">
+  <h2>IA para Crear Presentaciones — ChatGPT y Copilot</h2>
+  <div class="cols">
+    <div>
+      <h3>Con ChatGPT puedes:</h3>
+      <ul class="check-list">
+        <li>Pedir que genere el esquema (outline) de la presentación</li>
+        <li>Pedirle texto para cada slide</li>
+        <li>Pedirle que mejore el texto que ya escribiste</li>
+        <li>Pedirle que adapte el tono (formal vs informal)</li>
+        <li>Pedirle que genere opciones de título impactante</li>
+      </ul>
+      <div class="callout" style="margin-top:14px">
+        <strong>Prompt efectivo:</strong> "Crea el esquema de una presentación ejecutiva de 8 slides sobre los resultados de ventas del Q1 2025 para una empresa de logística en Barranquilla. Usa estructura SCQA. Dame título y 3 puntos clave por slide."
+      </div>
+    </div>
+    <div>
+      <h3>Microsoft Copilot en PowerPoint:</h3>
+      <p>Si tienes Microsoft 365 con Copilot, puedes:</p>
+      <ul class="check-list">
+        <li>Generar slides desde un texto o documento Word</li>
+        <li>Resumir una presentación existente</li>
+        <li>Agregar una slide sobre un tema con un solo prompt</li>
+        <li>Crear hablado para cada slide</li>
+        <li>Diseñar el layout automáticamente</li>
+      </ul>
+      <div class="callout tip" style="margin-top:14px">
+        <strong>Advertencia ética:</strong> La IA te da un borrador. Siempre revisa, corrige datos incorrectos y personaliza al contexto real de tu empresa. No presentes sin revisar.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Notas del Presentador — Tu Guión Invisible</h2>
+  <div class="cols">
+    <div>
+      <p>Las notas del presentador en PowerPoint son texto visible solo para ti (en el Panel de notas). El público ve la diapositiva, tú ves el guión.</p>
+      <div class="callout"><strong>Modo presentador:</strong> Cuando proyectas en pantalla secundaria, PowerPoint muestra en tu pantalla: la slide actual, la siguiente, el tiempo y tus notas. El público solo ve la slide grande.</div>
+      <h3 style="margin-top:16px">¿Qué poner en las notas?</h3>
+      <ul class="check-list">
+        <li>Los datos exactos que mencionarás</li>
+        <li>Una anécdota o ejemplo local</li>
+        <li>La transición al siguiente slide</li>
+        <li>Posibles preguntas y sus respuestas</li>
+        <li>Tiempo estimado para esa slide</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ejemplo de nota bien escrita:</h3>
+      <div class="box" style="font-size:0.88em;line-height:1.7">
+        <p style="color:#7dd3fc;margin-bottom:8px"><em>Slide 5 — Ventas por Ciudad (2 min)</em></p>
+        <p style="margin:0">"Como vemos en este gráfico, Barranquilla lidera con $38M, seguida de Bogotá con $54M. El dato interesante es que Medellín, con solo 8 meses operando, ya representa el 18% del total. [señalar la barra de Medellín] Esto nos lleva a preguntarnos: ¿vale la pena abrir otro punto en el eje cafetero? Esa es exactamente la decisión que necesitamos tomar hoy."</p>
+      </div>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Practica con las notas:</strong> Antes de presentar, usa F5 para iniciar la presentación con el Panel de presentador activo. Practica mirando las notas sin que el público vea que las ves.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide practica">
+  <h2>Actividad Final Día 8 — 70 min</h2>
+  <div class="callout tip"><strong>Entregable:</strong> Versión mejorada de la presentación de ADMIN CARIBE + Demo de Canva</div>
+  <div class="cols">
+    <div>
+      <h3>Parte 1 — Mejoras a presentación PPT (40 min):</h3>
+      <ul class="num-list">
+        <li>Aplica al menos 3 leyes de Gestalt identificables</li>
+        <li>Cambia las transiciones: todo debe ser "Desvanecer" o "Empujar"</li>
+        <li>Agrega animaciones "Aparecer" solo donde ayude a mostrar pasos</li>
+        <li>Escribe notas del presentador en las 3 slides principales (mínimo 5 líneas cada una)</li>
+        <li>Prueba en Modo Presentador (F5 o Alt+F5)</li>
+      </ul>
+      <h3 style="margin-top:14px">Parte 2 — Canva (30 min):</h3>
+      <ul class="num-list">
+        <li>Crea una cuenta en Canva.com (o usa cuenta existente)</li>
+        <li>Crea una infografía del proceso de ventas de ADMIN CARIBE (5 pasos)</li>
+        <li>Exportar como PNG y agregar a la última slide de la presentación PPT</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Criterios de evaluación:</h3>
+      <ul class="check-list">
+        <li>Al menos 2 leyes de Gestalt aplicadas visiblemente</li>
+        <li>Transiciones consistentes en toda la presentación</li>
+        <li>Notas del presentador escritas y con guión</li>
+        <li>Infografía de Canva incorporada al PPT</li>
+        <li>La presentación final tiene máx. 10 slides y 15 min de duración estimada</li>
+      </ul>
+      <div class="callout" style="margin-top:16px">
+        <strong>Cierre de unidad:</strong> Con esto terminas la unidad de Presentaciones. Tienes: PowerPoint profesional, principios de diseño, Canva, IA y notas de presentador. Esta presentación se presentará en el Día 12.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide resumen">
+  <h2>Resumen — Cierre de la Unidad de Presentaciones</h2>
+  <div class="cols">
+    <div>
+      <h3>Todo lo que dominamos (Días 7-8):</h3>
+      <ul class="check-list">
+        <li>Estructura ejecutiva SCQA</li>
+        <li>Jerarquía visual y regla 6x6</li>
+        <li>Patrón de diapositiva y branding</li>
+        <li>Tipografía y tamaños profesionales</li>
+        <li>Leyes de Gestalt aplicadas al diseño</li>
+        <li>Animaciones y transiciones correctas</li>
+        <li>Canva para diseño rápido</li>
+        <li>IA para generar presentaciones</li>
+        <li>Notas del presentador</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Próxima unidad — Días 9 y 10:</h3>
+      <div class="box">
+        <h3>Bases de Datos + IA Administrativa</h3>
+        <ul>
+          <li>¿Qué es una base de datos? ¿Por qué importa?</li>
+          <li>Microsoft Access: tablas, relaciones, consultas</li>
+          <li>Excel como base de datos: BDCONTAR, BDSUMA</li>
+          <li>Introducción a ChatGPT para la oficina</li>
+          <li>Microsoft Copilot en aplicaciones de Office</li>
+          <li>Automatización de tareas administrativas con IA</li>
+        </ul>
+      </div>
+      <div class="callout warn" style="margin-top:14px"><strong>Para el Día 9:</strong> Instalar Access si no lo tienen (viene con Microsoft 365). Verificar que tienen cuenta de correo institucional para Copilot.</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 9</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>

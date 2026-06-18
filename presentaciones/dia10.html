@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Día 10 — Excel como BD e IA Administrativa | Módulo 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;padding:55px 75px;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.slide.portada{background:linear-gradient(135deg,#001a0a 0%,#0a1a30 100%);text-align:center;align-items:center}
+.slide.tema{background:#0d1b2a}
+.slide.practica{background:#030d06}
+.slide.resumen{background:linear-gradient(135deg,#030d06 0%,#0d1b2a 100%)}
+h1.titulo{font-size:2.8em;color:#fff;margin-bottom:16px;line-height:1.2}
+h1.titulo span{color:#34d399}
+.subtitulo{font-size:1.2em;color:#6ee7b7;margin-bottom:30px}
+h2{font-size:1.9em;color:#34d399;margin-bottom:26px;border-bottom:2px solid #0a2a10;padding-bottom:10px}
+h3{font-size:1.3em;color:#6ee7b7;margin-bottom:14px}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.8;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+.dia-badge{background:#34d399;color:#001a06;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:8px}
+.box{background:#0a2a10;border-radius:10px;padding:22px;border-left:4px solid #34d399}
+.box.blue{border-left-color:#38bdf8;background:#0a1a2a}
+.box.purple{border-left-color:#c084fc;background:#1a0a30}
+.box.orange{border-left-color:#fb923c;background:#1a1020}
+.box.yellow{border-left-color:#f0b429;background:#1a1500}
+.box h3{font-size:1.1em;margin-bottom:10px}
+.callout{background:#0a2a10;border:1px solid #34d399;border-radius:9px;padding:18px 22px;margin:16px 0;font-size:1.02em}
+.callout.blue{background:#0a1a2a;border-color:#38bdf8}
+.callout.purple{background:#1a0a30;border-color:#c084fc}
+.callout.warn{background:#1a1500;border-color:#f0b429}
+.callout.red{background:#2a1010;border-color:#e05050}
+.callout strong{color:#34d399}
+.callout.blue strong{color:#38bdf8}
+.callout.purple strong{color:#c084fc}
+.callout.warn strong{color:#f0b429}
+.callout.red strong{color:#e05050}
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.check-list li::before{content:'✓ ';color:#34d399;font-weight:700}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
+.x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
+.num-list{counter-reset:item}
+.num-list li{list-style:none;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#34d399;color:#001a06;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88em;flex-shrink:0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.92em}
+th{background:#0a2a10;color:#6ee7b7;padding:9px 13px;text-align:left}
+td{padding:9px 13px;border-bottom:1px solid #0a1a10;color:#c8d8e8}
+.code{background:#020a04;border:1px solid #0a2a10;border-radius:8px;padding:18px;font-family:'Courier New',monospace;font-size:1em;color:#79c0ff;margin:12px 0;line-height:1.8}
+.code .fn{color:#34d399}
+.code .comment{color:#8b949e}
+.code .str{color:#a5d6ff}
+/* AI chat mock */
+.chat-bubble{max-width:85%;margin-bottom:12px;padding:14px 18px;border-radius:12px;font-size:0.88em;line-height:1.6}
+.chat-user{background:#0a2a10;border:1px solid #34d399;color:#c8d8e8;margin-left:auto;border-radius:12px 12px 2px 12px}
+.chat-ai{background:#0a1a2a;border:1px solid #38bdf8;color:#c8d8e8;margin-right:auto;border-radius:12px 12px 12px 2px}
+.chat-label{font-size:0.75em;margin-bottom:4px}
+.chat-label.user{color:#6ee7b7;text-align:right}
+.chat-label.ai{color:#7dd3fc}
+/* Prompt boxes */
+.prompt-box{background:#020a04;border:1px solid #34d399;border-radius:8px;padding:16px;margin-bottom:12px;font-family:'Courier New',monospace;font-size:0.88em;color:#a0f0c0;line-height:1.6}
+.prompt-box .label{color:#34d399;font-family:'Segoe UI',sans-serif;font-size:0.8em;margin-bottom:6px;font-weight:700}
+.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#0a2a10}
+.progress-bar{height:100%;background:linear-gradient(90deg,#34d399,#6ee7b7);transition:width 0.3s}
+.nav-info{position:fixed;bottom:12px;right:20px;color:#1a4a1a;font-size:0.82em}
+.slide-counter{position:fixed;bottom:12px;left:20px;color:#1a4a1a;font-size:0.82em}
+</style>
+</head>
+<body>
+
+<div class="slide portada active">
+  <span class="dia-badge">DÍA 10 DE 12</span>
+  <h1 class="titulo">Excel como BD<br><span>e IA Administrativa</span></h1>
+  <p class="subtitulo">BDCONTAR · BDSUMA · BDPROMEDIO · ChatGPT · Copilot en Office</p>
+  <p style="color:#0a3010;margin-top:20px">INTEBIEN S.A.S. | Módulo 11 | Unidades 11.2.2 + 11.2.3</p>
+</div>
+
+<div class="slide tema">
+  <h2>Funciones de Base de Datos en Excel — La Serie BD</h2>
+  <p>Las funciones BD (base de datos) de Excel filtran y calculan sobre rangos de datos usando criterios definidos en un rango separado, similar a hacer consultas SQL.</p>
+  <div class="cols">
+    <div>
+      <h3>Las 3 más usadas:</h3>
+      <div class="code">
+        <span class="comment">Estructura general:</span><br>
+        =BD<span class="fn">FUNCIÓN</span>(base_datos; campo; criterios)<br><br>
+        <span class="comment">Contar pedidos de Barranquilla</span><br>
+        =<span class="fn">BDCONTAR</span>(A1:G100;<span class="str">"Monto"</span>;J1:J2)<br><br>
+        <span class="comment">Suma de ventas de Barranquilla</span><br>
+        =<span class="fn">BDSUMA</span>(A1:G100;<span class="str">"Monto"</span>;J1:J2)<br><br>
+        <span class="comment">Promedio de ventas de Barranquilla</span><br>
+        =<span class="fn">BDPROMEDIO</span>(A1:G100;<span class="str">"Monto"</span>;J1:J2)
+      </div>
+    </div>
+    <div>
+      <h3>Estructura del rango de criterios:</h3>
+      <table>
+        <tr><th>Columna J (encabezado igual a la BD)</th></tr>
+        <tr><td>Ciudad &lt;-- el encabezado debe ser idéntico</td></tr>
+        <tr><td>Barranquilla &lt;-- el criterio</td></tr>
+      </table>
+      <div class="callout" style="margin-top:14px">
+        <strong>Ventaja vs SUMAR.SI:</strong> El rango de criterios puede tener múltiples condiciones en múltiples columnas. Puedes filtrar por ciudad Y por mes Y por vendedor simultáneamente, sin fórmulas anidadas complejas.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>BDCONTAR, BDSUMA y BDMAX — Casos Prácticos</h2>
+  <div class="cols">
+    <div>
+      <h3>Toda la familia BD:</h3>
+      <table>
+        <tr><th>Función</th><th>Qué calcula</th></tr>
+        <tr><td style="color:#34d399">BDCONTAR</td><td>Cuenta celdas numéricas que cumplen el criterio</td></tr>
+        <tr><td style="color:#34d399">BDCONTARA</td><td>Cuenta cualquier celda no vacía (texto o número)</td></tr>
+        <tr><td style="color:#34d399">BDSUMA</td><td>Suma los valores que cumplen el criterio</td></tr>
+        <tr><td style="color:#34d399">BDPROMEDIO</td><td>Promedio de los valores filtrados</td></tr>
+        <tr><td style="color:#34d399">BDMAX</td><td>El valor más alto del filtro</td></tr>
+        <tr><td style="color:#34d399">BDMIN</td><td>El valor más bajo del filtro</td></tr>
+        <tr><td style="color:#34d399">BDEXTRAER</td><td>Extrae el único registro que cumple el criterio</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Criterios múltiples (Y / O):</h3>
+      <div class="callout blue">
+        <strong>Criterio Y (ambas condiciones):</strong><br>
+        Misma fila del criterio:
+        <table style="margin-top:8px;font-size:0.85em">
+          <tr><th>Ciudad</th><th>Mes</th></tr>
+          <tr><td>Barranquilla</td><td>Enero</td></tr>
+        </table>
+        Solo cuenta filas donde Ciudad=BQ Y Mes=Enero
+      </div>
+      <div class="callout purple" style="margin-top:12px">
+        <strong>Criterio O (cualquier condición):</strong><br>
+        Filas diferentes del criterio:
+        <table style="margin-top:8px;font-size:0.85em">
+          <tr><th>Ciudad</th></tr>
+          <tr><td>Barranquilla</td></tr>
+          <tr><td>Bogotá</td></tr>
+        </table>
+        Cuenta filas donde Ciudad=BQ O Ciudad=Bogotá
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Introducción a la IA — ChatGPT en la Oficina</h2>
+  <div class="cols">
+    <div>
+      <p>ChatGPT es un asistente de inteligencia artificial conversacional. Le hablas en lenguaje natural y te ayuda a redactar, analizar, resumir, crear fórmulas y mucho más.</p>
+      <div class="callout"><strong>¿Qué puede hacer por un auxiliar administrativo?</strong></div>
+      <ul class="check-list">
+        <li>Redactar correos profesionales y formales</li>
+        <li>Resumir documentos largos</li>
+        <li>Crear plantillas de informes</li>
+        <li>Generar fórmulas de Excel explicadas</li>
+        <li>Traducir documentos</li>
+        <li>Crear listas de chequeo de procesos</li>
+        <li>Responder preguntas sobre normativas</li>
+        <li>Ayudar a estructurar presentaciones</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Chat de ejemplo — Fórmulas en Excel:</h3>
+      <div>
+        <div class="chat-label user">Tú</div>
+        <div class="chat-bubble chat-user">Necesito una fórmula que busque el precio de un producto en la hoja "Precios" columna B usando el código de la columna A, y si no encuentra muestre "No encontrado"</div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="chat-label ai">ChatGPT</div>
+        <div class="chat-bubble chat-ai">
+          Usa esta fórmula:<br>
+          <code style="color:#34d399">=IFERROR(BUSCARV(A2,Precios!A:B,2,0),"No encontrado")</code><br><br>
+          Explicación: BUSCARV busca el valor de A2 en la hoja Precios, trae la columna 2 (precios), y si no lo encuentra, IFERROR captura el error y muestra "No encontrado".
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Prompts Efectivos — Cómo Hablarle a la IA</h2>
+  <p>Un "prompt" es la instrucción que le das a la IA. Un buen prompt = una respuesta útil. Un prompt vago = respuesta vaga.</p>
+  <div class="cols">
+    <div>
+      <h3>Estructura de un buen prompt:</h3>
+      <div class="callout blue"><strong>Contexto + Tarea + Formato</strong></div>
+      <div class="prompt-box">
+        <div class="label">PROMPT BÁSICO (resultado mediocre):</div>
+        "Escribe un correo de cobro."
+      </div>
+      <div class="prompt-box">
+        <div class="label">PROMPT EFECTIVO (resultado útil):</div>
+        "Eres el auxiliar de cartera de ADMIN CARIBE S.A.S. en Barranquilla. Escribe un correo formal y cordial para el cliente Juan García que tiene una factura de $2.4 millones vencida desde hace 30 días. El tono debe ser profesional pero amigable, recordándole que puede pagar por transferencia o en oficina. Máximo 150 palabras."
+      </div>
+    </div>
+    <div>
+      <h3>Prompts útiles para la oficina:</h3>
+      <div class="prompt-box">
+        <div class="label">Para crear listas:</div>
+        "Dame una lista de verificación de 10 pasos para el cierre contable mensual de una empresa pequeña en Colombia."
+      </div>
+      <div class="prompt-box">
+        <div class="label">Para resumir:</div>
+        "Resume este documento de 5 páginas en 5 puntos clave de máximo 2 líneas cada uno: [pegar el texto]"
+      </div>
+      <div class="prompt-box">
+        <div class="label">Para mejorar texto:</div>
+        "Mejora la redacción de este párrafo, manteniendo el significado pero haciéndolo más profesional y formal: [tu texto]"
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Microsoft Copilot — IA Integrada en Office</h2>
+  <div class="cols">
+    <div>
+      <h3>Copilot en Word:</h3>
+      <ul class="check-list">
+        <li>Genera borradores desde una descripción</li>
+        <li>Resume documentos largos en puntos</li>
+        <li>Cambia el tono (formal, informal, técnico)</li>
+        <li>Hace preguntas sobre el documento ("¿cuáles son las fechas clave?")</li>
+      </ul>
+      <h3 style="margin-top:14px">Copilot en Excel:</h3>
+      <ul class="check-list">
+        <li>Analiza datos y sugiere gráficos</li>
+        <li>Crea fórmulas desde lenguaje natural</li>
+        <li>Explica fórmulas complejas</li>
+        <li>Identifica patrones y anomalías en los datos</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Copilot en Outlook:</h3>
+      <ul class="check-list">
+        <li>Resume hilos de correo largos</li>
+        <li>Redacta respuestas de correo</li>
+        <li>Sugiere el tono apropiado</li>
+        <li>Prepara para reuniones (resume emails previos)</li>
+      </ul>
+      <div class="callout warn" style="margin-top:14px">
+        <strong>Disponibilidad:</strong> Copilot requiere licencia Microsoft 365 Copilot (adicional al plan estándar). Muchas empresas grandes lo están adoptando en 2025. Como auxiliar, conocer su existencia y cómo funciona es diferenciador.
+      </div>
+      <div class="callout blue" style="margin-top:10px">
+        <strong>Alternativa gratuita:</strong> Copilot.microsoft.com es gratuito para uso general (sin integración directa con Office, pero muy útil).
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide tema">
+  <h2>Ética y Límites del Uso de IA</h2>
+  <div class="cols">
+    <div>
+      <h3>Lo que SÍ está bien:</h3>
+      <ul class="check-list">
+        <li>Usar IA para redactar borradores que tú revisas y apruebas</li>
+        <li>Pedir ayuda con fórmulas o explicaciones técnicas</li>
+        <li>Resumir documentos públicos</li>
+        <li>Generar ideas o estructuras de trabajo</li>
+        <li>Traducir documentos internos</li>
+        <li>Aprender sobre temas que no conoces</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Lo que NO debes hacer:</h3>
+      <ul class="x-list">
+        <li>Compartir datos personales de clientes/empleados con IA pública</li>
+        <li>Enviar información confidencial de la empresa a ChatGPT</li>
+        <li>Presentar el output de IA sin revisarlo como si fuera tuyo</li>
+        <li>Confiar ciegamente: la IA puede inventar datos incorrectos</li>
+        <li>Usar IA para falsificar documentos oficiales</li>
+        <li>Usar IA para tomar decisiones que afectan a personas sin supervisión humana</li>
+      </ul>
+      <div class="callout red" style="margin-top:10px">
+        <strong>Ley 1581 de 2012 + Decreto 1377:</strong> Compartir datos personales colombianos (cédulas, salarios, datos médicos) con sistemas externos sin autorización es una infracción de protección de datos. Usa datos ficticios o anonimizados al entrenar prompts.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide practica">
+  <h2>Actividad Integradora — 65 min</h2>
+  <div class="callout blue"><strong>Proyecto:</strong> Crear un panel de análisis de ADMIN CARIBE con funciones BD + usar IA para automatizar tareas administrativas.</div>
+  <div class="cols">
+    <div>
+      <h3>Parte 1 — Funciones BD en Excel (30 min):</h3>
+      <ul class="num-list">
+        <li>En el archivo de ventas de ADMIN CARIBE, crea un rango de criterios en columnas separadas (K:M)</li>
+        <li>Crea un panel de análisis con: BDSUMA por ciudad, BDCONTAR por vendedor, BDPROMEDIO por mes, BDMAX de venta individual</li>
+        <li>Cambia los criterios y observa cómo el panel se actualiza automáticamente</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Parte 2 — Tareas con IA (35 min):</h3>
+      <ul class="num-list">
+        <li>Usar ChatGPT o Copilot para generar un correo de cobro para un cliente vencido de ADMIN CARIBE</li>
+        <li>Pedirle a la IA que cree un proceso de 8 pasos para el cierre de mes del área de ventas</li>
+        <li>Pedir a la IA que explique la fórmula INDICE+COINCIDIR que usamos el Día 2</li>
+        <li>Generar con IA un borrador del "Resumen Ejecutivo" de los resultados del trimestre</li>
+        <li>Revisar, corregir y personalizar cada respuesta antes de guardarla</li>
+      </ul>
+      <div class="callout warn" style="margin-top:8px">
+        <strong>Usar datos ficticios de ADMIN CARIBE</strong> — nunca datos reales de personas reales.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide resumen">
+  <h2>Resumen del Día 10</h2>
+  <div class="cols">
+    <div>
+      <h3>Lo que aprendimos:</h3>
+      <ul class="check-list">
+        <li>Funciones BD: BDCONTAR, BDSUMA, BDPROMEDIO, BDMAX</li>
+        <li>Criterios Y / O con rangos múltiples</li>
+        <li>ChatGPT para tareas administrativas reales</li>
+        <li>Estructura de prompts efectivos</li>
+        <li>Microsoft Copilot en Word, Excel y Outlook</li>
+        <li>Ética y límites del uso de IA</li>
+        <li>Protección de datos personales con IA</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Los últimos dos días:</h3>
+      <div class="box">
+        <h3>Día 11 — Automatización e IA Avanzada</h3>
+        <ul>
+          <li>IA para automatizar flujos de trabajo</li>
+          <li>Tendencias en herramientas ofimáticas 2025-2026</li>
+          <li>Taller proyecto integrador (ensamblaje final)</li>
+          <li>Preparación para evaluación y exposición</li>
+        </ul>
+      </div>
+      <div class="box blue" style="margin-top:12px">
+        <h3>Día 12 — Cierre y Evaluación</h3>
+        <ul>
+          <li>Exposición de proyectos (5 min por grupo)</li>
+          <li>Evaluación práctica individual</li>
+          <li>Retroalimentación y portafolio final</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="pb"></div></div>
+<div class="slide-counter" id="sc">1 / 9</div>
+<div class="nav-info">← → para navegar</div>
+<script>
+const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
+function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});show(0);
+</script>
+</body>
+</html>
