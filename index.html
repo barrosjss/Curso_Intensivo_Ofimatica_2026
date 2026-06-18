@@ -1,39 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso Intensivo de Ofimática 2026 | UniSalamanca</title>
-    <meta name="description" content="Curso práctico de Microsoft 365 para carreras administrativas. Domina Word, Excel, PowerPoint y más.">
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 11 - Herramientas Ofimáticas II | INTEBIEN</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0d1b2a; color: #e0e6ed; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #1a3a5c 0%, #0d6e4c 100%); padding: 40px; text-align: center; }
+  header h1 { font-size: 2.2em; color: #fff; margin-bottom: 8px; }
+  header p { color: #a8d5c2; font-size: 1.1em; }
+  .badge { display: inline-block; background: #0d6e4c; color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 0.85em; margin-top: 10px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: 0 auto; }
+  .card { background: #1a2d42; border-radius: 12px; padding: 24px; border-left: 4px solid #0d6e4c; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; display: block; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(13,110,76,0.3); border-left-color: #1ab87a; }
+  .card .dia { font-size: 0.8em; color: #6fa8dc; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .card h3 { font-size: 1.15em; color: #fff; margin-bottom: 8px; line-height: 1.4; }
+  .card p { font-size: 0.88em; color: #8fa8c0; line-height: 1.5; }
+  .card .temas { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { background: #0d2d42; color: #5bc4a0; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; }
+  .section-title { text-align: center; padding: 30px 40px 0; font-size: 1.3em; color: #5bc4a0; text-transform: uppercase; letter-spacing: 2px; }
+  footer { text-align: center; padding: 30px; color: #4a6a82; font-size: 0.85em; }
+</style>
 </head>
 <body>
-    <aside>
-        <div class="logo-container">
-            <h1>Ofimática 2026</h1>
-            <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">UniSalamanca — Administración</p>
-        </div>
-        <nav class="nav-links" id="sidebar-nav">
-            <!-- Nav items will be injected here -->
-        </nav>
-        <div style="padding: 1.5rem; border-top: 1px solid var(--glass-border);">
-            <p style="font-size: 0.75rem; color: var(--text-secondary);">Elaborado por:</p>
-            <p style="font-size: 0.8rem; font-weight: 600;">Jesús Reinaldo Barros Bolívar</p>
-        </div>
-    </aside>
+<header>
+  <h1>Módulo 11: Herramientas Ofimáticas II</h1>
+  <p>INTEBIEN S.A.S. | Curso Intensivo 2026-2 | Auxiliar Administrativo</p>
+  <span class="badge">90 horas | 12 clases de 2 horas</span>
+</header>
 
-    <div id="progress-container" style="position: fixed; top: 0; left: 300px; right: 0; height: 4px; background: var(--glass); z-index: 1000;">
-        <div id="progress-bar" style="height: 100%; width: 0%; background: linear-gradient(to right, var(--accent-blue), var(--accent-purple)); transition: width 0.4s ease;"></div>
-    </div>
+<p class="section-title">Unidad 1: Excel Avanzado</p>
+<div class="grid">
+  <a class="card" href="dia01/dia01.html">
+    <div class="dia">Día 1</div>
+    <h3>Bienvenida + BUSCARV y BUSCARH</h3>
+    <p>Introducción al módulo. Funciones de búsqueda vertical y horizontal entre tablas.</p>
+    <div class="temas"><span class="tag">BUSCARV</span><span class="tag">BUSCARH</span><span class="tag">Diagnóstico</span></div>
+  </a>
+  <a class="card" href="dia02/dia02.html">
+    <div class="dia">Día 2</div>
+    <h3>INDICE + COINCIDIR y Funciones Condicionales</h3>
+    <p>Búsqueda flexible bidireccional. SUMAR.SI, CONTAR.SI, PROMEDIO.SI en contexto laboral.</p>
+    <div class="temas"><span class="tag">INDICE</span><span class="tag">COINCIDIR</span><span class="tag">SUMAR.SI</span><span class="tag">CONTAR.SI</span></div>
+  </a>
+  <a class="card" href="dia03/dia03.html">
+    <div class="dia">Día 3</div>
+    <h3>Funciones Financieras, Texto y Matriciales</h3>
+    <p>PAGO, TASA, NPER, VA, VF. Funciones de texto avanzadas. Fórmulas matriciales básicas.</p>
+    <div class="temas"><span class="tag">PAGO</span><span class="tag">TASA</span><span class="tag">Texto</span><span class="tag">Matriciales</span></div>
+  </a>
+</div>
 
-    <main id="course-content">
-        <!-- Content will be injected here -->
-    </main>
+<p class="section-title">Unidad 1: Tablas Dinámicas y Dashboards</p>
+<div class="grid">
+  <a class="card" href="dia04/dia04.html">
+    <div class="dia">Día 4</div>
+    <h3>Tablas Dinámicas — Creación y Configuración</h3>
+    <p>Qué es una tabla dinámica, para qué sirve, cómo crearla. Campos, filtros, segmentación.</p>
+    <div class="temas"><span class="tag">Tablas Dinámicas</span><span class="tag">Campos</span><span class="tag">Filtros</span></div>
+  </a>
+  <a class="card" href="dia05/dia05.html">
+    <div class="dia">Día 5</div>
+    <h3>Gráficos Dinámicos, Slicers y Power Query</h3>
+    <p>Gráficos vinculados a tablas. Segmentadores y líneas de tiempo. Importar y transformar datos.</p>
+    <div class="temas"><span class="tag">Gráficos</span><span class="tag">Slicers</span><span class="tag">Power Query</span></div>
+  </a>
+  <a class="card" href="dia06/dia06.html">
+    <div class="dia">Día 6</div>
+    <h3>Macros Básicas y Dashboard Ejecutivo</h3>
+    <p>Grabar y editar macros. Principios de diseño de dashboard. KPIs. Protección de datos.</p>
+    <div class="temas"><span class="tag">Macros</span><span class="tag">Dashboard</span><span class="tag">KPIs</span><span class="tag">Protección</span></div>
+  </a>
+</div>
 
-    <script type="module" src="app.js"></script>
+<p class="section-title">Unidad 2: Presentaciones Ejecutivas</p>
+<div class="grid">
+  <a class="card" href="dia07/dia07.html">
+    <div class="dia">Día 7</div>
+    <h3>PowerPoint — Diseño Ejecutivo Profesional</h3>
+    <p>Estructura, jerarquía visual, temas y patrones de diapositiva. Branding corporativo.</p>
+    <div class="temas"><span class="tag">PowerPoint</span><span class="tag">Diseño</span><span class="tag">Branding</span></div>
+  </a>
+  <a class="card" href="dia08/dia08.html">
+    <div class="dia">Día 8</div>
+    <h3>Comunicación Visual + Canva y Alternativas</h3>
+    <p>Leyes de Gestalt, colores, tipografía. Animaciones. Canva, Google Slides, Prezi. IA para presentaciones.</p>
+    <div class="temas"><span class="tag">Gestalt</span><span class="tag">Canva</span><span class="tag">Animaciones</span></div>
+  </a>
+</div>
+
+<p class="section-title">Unidad 2: Bases de Datos e Inteligencia Artificial</p>
+<div class="grid">
+  <a class="card" href="dia09/dia09.html">
+    <div class="dia">Día 9</div>
+    <h3>Fundamentos de Bases de Datos y Access</h3>
+    <p>Conceptos de BD relacionales. Access básico: tablas, relaciones, consultas y formularios.</p>
+    <div class="temas"><span class="tag">Bases de Datos</span><span class="tag">Access</span><span class="tag">Relaciones</span></div>
+  </a>
+  <a class="card" href="dia10/dia10.html">
+    <div class="dia">Día 10</div>
+    <h3>Excel como BD + Inteligencia Artificial</h3>
+    <p>BDCONTAR, BDSUMA, BDPROMEDIO. ChatGPT y Microsoft Copilot en tareas administrativas.</p>
+    <div class="temas"><span class="tag">BDSUMA</span><span class="tag">ChatGPT</span><span class="tag">Copilot</span></div>
+  </a>
+  <a class="card" href="dia11/dia11.html">
+    <div class="dia">Día 11</div>
+    <h3>Automatización con IA y Ética Digital</h3>
+    <p>Automatizar tareas repetitivas. Privacidad, veracidad, revisión. Tendencias 2025-2026. Proyecto integrador.</p>
+    <div class="temas"><span class="tag">Automatización</span><span class="tag">Ética IA</span><span class="tag">Tendencias</span></div>
+  </a>
+  <a class="card" href="dia12/dia12.html">
+    <div class="dia">Día 12</div>
+    <h3>Cierre, Proyecto Final y Evaluación</h3>
+    <p>Presentación del proyecto integrador. Evidencias del módulo. Rúbrica de evaluación. Retroalimentación.</p>
+    <div class="temas"><span class="tag">Proyecto</span><span class="tag">Evaluación</span><span class="tag">Portafolio</span></div>
+  </a>
+</div>
+
+<footer>INTEBIEN S.A.S. | Módulo 11 Herramientas Ofimáticas II y Bases de Datos | 2026-2</footer>
 </body>
 </html>
