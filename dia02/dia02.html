@@ -5,513 +5,1079 @@
 <title>Día 2 — INDICE+COINCIDIR y Funciones Condicionales | Módulo 11</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden}
-.slide{display:none;position:absolute;inset:0;padding:60px 80px;flex-direction:column;justify-content:center}
-.slide.active{display:flex}
-.slide.portada{background:linear-gradient(135deg,#0d2a42 0%,#1a0d42 100%);text-align:center;align-items:center}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1b2a;color:#e0e6ed;height:100vh;overflow:hidden;user-select:none}
+
+/* ── Slides ── */
+.slide{opacity:0;pointer-events:none;position:absolute;inset:0;padding:52px 76px 70px;
+  display:flex;flex-direction:column;justify-content:center;transition:opacity .38s ease}
+.slide.active{opacity:1;pointer-events:all}
+.slide.portada{background:linear-gradient(145deg,#0e1e38 0%,#1a0e42 60%,#2a0a38 100%);text-align:center;align-items:center}
 .slide.tema{background:#0d1b2a}
-.slide.practica{background:#0a1f12}
-.slide.resumen{background:linear-gradient(135deg,#0a2a1a 0%,#0d1b2a 100%)}
-h1.titulo{font-size:3em;color:#fff;line-height:1.2;margin-bottom:16px}
-h1.titulo span{color:#7c6ff0}
-.subtitulo{font-size:1.3em;color:#b0a8f5;margin-bottom:30px}
-h2{font-size:2em;color:#7c6ff0;margin-bottom:30px;border-bottom:2px solid #1a1a3a;padding-bottom:12px}
-h3{font-size:1.4em;color:#a8a0f0;margin-bottom:16px}
-p{font-size:1.15em;line-height:1.7;color:#c8d8e8;margin-bottom:14px}
-li{font-size:1.1em;line-height:1.8;color:#c8d8e8;margin-left:24px}
-ul{margin-bottom:20px}
-.dia-badge{background:#7c6ff0;color:#fff;padding:8px 24px;border-radius:24px;font-size:1em;font-weight:700;margin-bottom:20px;display:inline-block}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px}
-.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:10px}
-.box{background:#1a2040;border-radius:12px;padding:24px;border-left:4px solid #7c6ff0}
-.box.green{border-left-color:#1ab87a;background:#0a2a1a}
-.box.yellow{border-left-color:#f0b429;background:#2a2010}
-.box.red{border-left-color:#e05050;background:#2d1a1a}
-.box.blue{border-left-color:#6fa8dc;background:#1a2540}
-.box h3{font-size:1.15em;margin-bottom:10px}
-.code{background:#0a0f1a;border:1px solid #2a2a4a;border-radius:8px;padding:20px;font-family:'Courier New',monospace;font-size:1.05em;color:#79c0ff;margin:16px 0;line-height:1.8}
-.code .fn{color:#ff7b72}
-.code .arg{color:#ffa657}
-.code .str{color:#a5d6ff}
-.code .comment{color:#8b949e}
-.formula-box{background:#1a1040;border:2px solid #7c6ff0;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
-.formula-box .fn-name{font-size:1.8em;color:#7c6ff0;font-weight:700;font-family:'Courier New',monospace}
-.formula-box .syntax{font-size:1.05em;color:#c8d8e8;font-family:'Courier New',monospace;margin-top:8px}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95em}
-th{background:#1a2040;color:#fff;padding:10px 14px;text-align:left}
-td{padding:10px 14px;border-bottom:1px solid #1a2040;color:#c8d8e8}
-tr:hover td{background:#1a2035}
-.col-key{color:#7c6ff0;font-weight:600;font-family:monospace}
-.callout{background:#1a1040;border:1px solid #7c6ff0;border-radius:10px;padding:20px 24px;margin:20px 0;font-size:1.05em}
-.callout.warn{background:#2a1a0a;border-color:#f0b429}
-.callout.green{background:#0a2a1a;border-color:#1ab87a}
-.callout.tip{background:#0a1a2a;border-color:#6fa8dc}
-.callout strong{color:#7c6ff0}
+.slide.practica{background:#091820}
+.slide.resumen{background:linear-gradient(145deg,#0a1e12 0%,#0d1b2a 100%)}
+.slide.aviso{background:linear-gradient(145deg,#1a0d2a 0%,#0d1b2a 100%)}
+
+/* ── Step reveal ── */
+.step{opacity:0;transform:translateY(18px);transition:opacity .38s ease,transform .38s ease;pointer-events:none}
+.step.visible{opacity:1;transform:translateY(0);pointer-events:all}
+
+/* ── Typography ── */
+h1.titulo{font-size:2.85em;color:#fff;line-height:1.18;margin-bottom:14px;font-weight:700}
+h1.titulo span{color:#a08aff}
+.subtitulo{font-size:1.25em;color:#b0a8f5;margin-bottom:28px}
+h2{font-size:1.85em;color:#9080f0;margin-bottom:24px;border-bottom:2px solid #1a1a3a;padding-bottom:10px;font-weight:700}
+h3{font-size:1.25em;color:#b0a8f5;margin-bottom:12px;font-weight:600}
+p{font-size:1.1em;line-height:1.7;color:#c8d8e8;margin-bottom:12px}
+li{font-size:1.05em;line-height:1.85;color:#c8d8e8;margin-left:22px}
+ul{margin-bottom:16px}
+
+/* ── Badges ── */
+.dia-badge{background:linear-gradient(135deg,#7c6ff0,#a08aff);color:#fff;padding:8px 22px;border-radius:20px;font-size:.95em;font-weight:700;margin-bottom:18px;display:inline-block;letter-spacing:.03em}
+.section-chip{display:inline-block;padding:4px 14px;border-radius:12px;font-size:.78em;font-weight:600;margin-bottom:18px}
+.chip-ic{background:#1a1040;color:#9080f0;border:1px solid #3a2a70}
+.chip-cond{background:#0a2015;color:#1ab87a;border:1px solid #1a4a30}
+.chip-practica{background:#1a1000;color:#f0b429;border:1px solid #4a3000}
+.chip-repaso{background:#0a1520;color:#6fa8dc;border:1px solid #1a3555}
+
+/* ── Layout ── */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:6px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:6px}
+.cols-60-40{display:grid;grid-template-columns:60fr 40fr;gap:36px}
+
+/* ── Boxes ── */
+.box{background:#1a2040;border-radius:12px;padding:20px 22px;border-left:4px solid #7c6ff0}
+.box.green{border-left-color:#1ab87a;background:#0a2015}
+.box.amber{border-left-color:#f0b429;background:#1a1400}
+.box.red{border-left-color:#e05050;background:#2a1010}
+.box.blue{border-left-color:#6fa8dc;background:#0d1e30}
+.box.teal{border-left-color:#00d4aa;background:#001a12}
+.box h3{font-size:1.1em;margin-bottom:8px}
+
+.callout{background:#1a1040;border:1px solid #7c6ff0;border-radius:10px;padding:16px 20px;margin:14px 0;font-size:1.05em}
+.callout.warn{background:#1a1200;border-color:#f0b429}
+.callout.green{background:#0a2015;border-color:#1ab87a}
+.callout.tip{background:#0a1525;border-color:#6fa8dc}
+.callout.red{background:#1a0a0a;border-color:#e05050}
+.callout strong{color:#a08aff}
 .callout.warn strong{color:#f0b429}
 .callout.green strong{color:#1ab87a}
 .callout.tip strong{color:#6fa8dc}
-.check-list li{list-style:none;padding-left:8px;margin-bottom:8px}
+.callout.red strong{color:#e05050}
+
+/* ── Code ── */
+.code{background:#070d18;border:1px solid #2a2a4a;border-radius:10px;padding:18px 22px;font-family:'Courier New',monospace;font-size:1em;color:#79c0ff;margin:12px 0;line-height:2.0}
+.code .fn{color:#ff7b72}
+.code .arg{color:#ffa657}
+.code .str{color:#a5d6ff}
+.code .cmt{color:#6a7688;font-style:italic}
+.code .hl{color:#ffd700;font-weight:700}
+.big-formula{background:#070d18;border:2px solid #7c6ff0;border-radius:12px;padding:18px 22px;font-family:'Courier New',monospace;font-size:1.1em;color:#c8c0ff;text-align:center;margin:14px 0;line-height:2.2}
+
+/* ── Tables ── */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92em}
+th{background:#1a2040;color:#fff;padding:9px 13px;text-align:left;font-size:.9em}
+td{padding:9px 13px;border-bottom:1px solid #1a2040;color:#c8d8e8}
+tr:hover td{background:#1a2035}
+.col-key{color:#a08aff;font-weight:600;font-family:monospace;font-size:.95em}
+.td-hl{background:#1a1040;color:#c0b8ff;font-weight:700}
+.td-green{color:#1ab87a;font-weight:600}
+
+/* ── Lists ── */
+.check-list li{list-style:none;padding-left:6px;margin-bottom:7px}
 .check-list li::before{content:'✓ ';color:#1ab87a;font-weight:700}
-.x-list li{list-style:none;padding-left:8px;margin-bottom:8px}
+.x-list li{list-style:none;padding-left:6px;margin-bottom:7px}
 .x-list li::before{content:'✗ ';color:#e05050;font-weight:700}
-.num-list{counter-reset:item}
-.num-list li{list-style:none;padding-left:8px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
-.num-list li::before{counter-increment:item;content:counter(item);background:#7c6ff0;color:#fff;min-width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9em;flex-shrink:0}
-.diagram{display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0}
-.box-d{background:#1a2040;border:2px solid #2a2a5a;border-radius:10px;padding:16px 24px;text-align:center;min-width:120px}
-.box-d.highlight{border-color:#7c6ff0;background:#1a1040}
-.box-d.green{border-color:#1ab87a;background:#0a2a1a}
-.arrow{color:#7c6ff0;font-size:2em}
-.highlight-cell{background:#2a1a50;color:#c0b8ff;font-weight:700;border:1px solid #7c6ff0;padding:4px 8px;border-radius:4px;font-family:monospace}
-.progress{position:fixed;bottom:0;left:0;right:0;height:4px;background:#1a2040}
-.progress-bar{height:100%;background:linear-gradient(90deg,#7c6ff0,#b0a8ff);transition:width 0.3s}
-.nav-info{position:fixed;bottom:12px;right:20px;color:#4a4a6a;font-size:0.82em}
-.slide-counter{position:fixed;bottom:12px;left:20px;color:#4a4a6a;font-size:0.82em}
-.vs-box{display:flex;gap:30px;margin:20px 0}
-.vs-box .side{flex:1;background:#1a2040;border-radius:12px;padding:20px}
+.num-list{counter-reset:item;list-style:none}
+.num-list li{padding-left:6px;margin-bottom:10px;display:flex;align-items:flex-start;gap:11px}
+.num-list li::before{counter-increment:item;content:counter(item);background:#7c6ff0;color:#fff;min-width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.85em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagrams ── */
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0}
+.box-d{background:#1a2040;border:2px solid #2a2a5a;border-radius:10px;padding:13px 20px;text-align:center;min-width:110px;font-size:.95em}
+.box-d.hl{border-color:#7c6ff0;background:#1a1040;color:#c0b8ff;font-weight:600}
+.box-d.green{border-color:#1ab87a;background:#0a2015;color:#1ab87a}
+.box-d.amber{border-color:#f0b429;background:#1a1200;color:#f0b429}
+.arrow{color:#7c6ff0;font-size:1.8em;flex-shrink:0}
+
+/* ── VS box ── */
+.vs-box{display:flex;gap:24px;margin:14px 0}
+.vs-box .side{flex:1;background:#1a2040;border-radius:12px;padding:18px 20px}
 .vs-box .side.left{border-top:3px solid #e05050}
 .vs-box .side.right{border-top:3px solid #1ab87a}
-.vs-box .side h3{margin-bottom:12px}
-.big-formula{background:#0a0f1a;border:2px solid #7c6ff0;border-radius:12px;padding:20px;font-family:'Courier New',monospace;font-size:1.15em;color:#c0b8ff;text-align:center;margin:16px 0;line-height:2}
+.vs-box .side h3{margin-bottom:10px;font-size:1.1em}
+
+/* ── Formula highlight box ── */
+.formula-hero{background:#070d18;border:2px solid #7c6ff0;border-radius:14px;padding:22px 28px;text-align:center;margin:16px 0}
+.formula-hero .fn-label{font-size:.8em;color:#6a7688;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.formula-hero .fn-text{font-family:'Courier New',monospace;font-size:1.3em;color:#e0d8ff;line-height:2}
+.formula-hero .fn-result{font-size:1.1em;color:#1ab87a;margin-top:10px;font-weight:600}
+
+/* ── Step indicator ── */
+#steps-hint{position:fixed;top:16px;right:20px;font-size:.78em;color:#3a3a5a;background:#0d1020;padding:4px 12px;border-radius:8px;border:1px solid #1a1a3a;transition:opacity .3s}
+#steps-hint.has-steps{color:#a08aff;border-color:#3a2a70}
+
+/* ── Progress / nav ── */
+.progress{position:fixed;bottom:0;left:0;right:0;height:3px;background:#0d1020}
+.progress-bar{height:100%;background:linear-gradient(90deg,#7c6ff0,#a08aff,#1ab87a);transition:width .35s ease}
+.nav-info{position:fixed;bottom:11px;right:20px;color:#2a2a4a;font-size:.78em}
+.slide-counter{position:fixed;bottom:11px;left:20px;color:#2a2a4a;font-size:.78em}
+.section-label{position:fixed;top:16px;left:20px;font-size:.75em;color:#2a2a4a;background:#0d1020;padding:3px 10px;border-radius:8px;border:1px solid #1a1a3a}
+
+/* ── Portada special ── */
+.portada-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(124,111,240,.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(26,184,122,.08) 0%,transparent 60%);pointer-events:none}
+.portada-icon{font-size:3.5em;margin-bottom:16px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── Syntax breakdown ── */
+.syntax-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}
+.syn-part{padding:6px 14px;border-radius:8px;font-family:'Courier New',monospace;font-size:.95em;font-weight:600}
+.syn-fn{background:#1a0a0a;color:#ff7b72;border:1px solid #4a1a1a}
+.syn-arg{background:#1a1000;color:#ffa657;border:1px solid #4a2a00}
+.syn-str{background:#0a1525;color:#a5d6ff;border:1px solid #1a3a5a}
+.syn-num{background:#0a2015;color:#1ab87a;border:1px solid #1a4a30}
+.syn-label{font-size:.8em;color:#6a7688;text-align:center;margin-top:4px}
+
+/* ── Pill tags ── */
+.pill{display:inline-block;padding:3px 12px;border-radius:12px;font-size:.82em;font-weight:600;margin:2px}
+.pill-p{background:#1a1040;color:#a08aff}
+.pill-g{background:#0a2015;color:#1ab87a}
+.pill-a{background:#1a1000;color:#f0b429}
+.pill-r{background:#1a0808;color:#e05050}
 </style>
 </head>
 <body>
 
-<!-- SLIDE 1: PORTADA -->
+<!-- ════════════════════════ SLIDE 1: PORTADA ════════════════════════ -->
 <div class="slide portada active" id="s1">
+  <div class="portada-glow"></div>
+  <div class="portada-icon">🔍</div>
   <span class="dia-badge">DÍA 2 DE 12</span>
   <h1 class="titulo">INDICE + COINCIDIR<br><span>y Funciones Condicionales</span></h1>
-  <p class="subtitulo">Búsqueda flexible bidireccional · SUMAR.SI · CONTAR.SI · PROMEDIO.SI</p>
-  <div style="margin-top:30px;color:#6a6a9a;font-size:0.95em">
+  <p class="subtitulo">Búsqueda profesional bidireccional · SUMAR.SI · CONTAR.SI · PROMEDIO.SI</p>
+  <div style="margin-top:24px;color:#4a4a6a;font-size:.9em;line-height:1.8">
     <p>INTEBIEN S.A.S. | Módulo 11 | 2 horas</p>
+    <p>Presiona <strong style="color:#7c6ff0">→</strong> o <strong style="color:#7c6ff0">Espacio</strong> para avanzar</p>
   </div>
 </div>
 
-<!-- SLIDE 2: REPASO -->
+<!-- ════════════════════════ SLIDE 2: REPASO ════════════════════════ -->
 <div class="slide tema" id="s2">
-  <h2>Repaso Día 1 — ¿Qué recuerdas?</h2>
+  <span class="section-chip chip-repaso">Repaso Día 1</span>
+  <h2>¿Qué recuerdas de BUSCARV?</h2>
   <div class="cols">
     <div>
-      <h3>¿Cuándo usamos BUSCARV?</h3>
-      <div class="code">
-        <span class="fn">=BUSCARV(</span>valor, tabla, columna, <span class="arg">FALSO</span><span class="fn">)</span>
-      </div>
-      <ul class="check-list">
-        <li>Busca en la primera columna de la tabla</li>
-        <li>Solo va hacia la derecha</li>
-        <li>Siempre FALSO como 4° argumento</li>
-        <li>Fijar tabla con $</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Limitaciones de BUSCARV:</h3>
-      <ul class="x-list">
-        <li>No puede buscar hacia la izquierda</li>
-        <li>Si insertas una columna en la tabla, el número se descuadra</li>
-        <li>Solo busca en la primera columna</li>
-        <li>No es bidireccional</li>
-      </ul>
-      <div class="callout" style="margin-top:14px">
-        <strong>Hoy aprenderemos:</strong> INDICE+COINCIDIR — que supera todas estas limitaciones y es el estándar profesional.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 3: QUÉ SON INDICE Y COINCIDIR -->
-<div class="slide tema" id="s3">
-  <h2>INDICE y COINCIDIR — ¿Qué hace cada uno?</h2>
-  <div class="cols">
-    <div>
-      <div class="box" style="margin-bottom:20px">
-        <h3>📌 INDICE</h3>
-        <p>Devuelve el valor de una celda específica dentro de un rango, dado un número de fila y columna.</p>
-        <div class="code" style="margin-top:10px">
-          <span class="fn">=INDICE(</span>rango, fila, [columna]<span class="fn">)</span><br>
-          <span class="comment">Ej: =INDICE(A1:D10, 3, 2)</span><br>
-          <span class="comment">Devuelve el valor fila 3, col 2</span>
+      <div class="step">
+        <h3>La fórmula que aprendimos ayer:</h3>
+        <div class="code">
+          <span class="fn">=BUSCARV(</span><span class="str">valor_buscado</span>, <span class="arg">tabla</span>, <span class="hl">n_columna</span>, <span class="arg">FALSO</span><span class="fn">)</span><br>
+          <span class="cmt">Ej: =BUSCARV(C3, Catalogo!$A:$D, 4, FALSO)</span>
         </div>
-      </div>
-      <div class="box">
-        <h3>🔍 COINCIDIR</h3>
-        <p>Encuentra la posición (número de fila) de un valor dentro de un rango.</p>
-        <div class="code" style="margin-top:10px">
-          <span class="fn">=COINCIDIR(</span>valor, rango, 0<span class="fn">)</span><br>
-          <span class="comment">Ej: =COINCIDIR("P003", A:A, 0)</span><br>
-          <span class="comment">Devuelve 4 (está en la fila 4)</span>
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;justify-content:center">
-      <h3>Juntas forman la fórmula definitiva:</h3>
-      <div class="big-formula">
-        =INDICE(<span style="color:#ffa657">columna_resultado</span>,<br>
-        &nbsp;&nbsp;COINCIDIR(<span style="color:#ff7b72">valor_buscado</span>,<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a5d6ff">columna_busqueda</span>, 0))
-      </div>
-      <div class="callout green">
-        <strong>Lógica:</strong> COINCIDIR encuentra la fila donde está el valor. INDICE va a esa fila y toma el dato de la columna que quieres.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 4: POR QUÉ ES MEJOR -->
-<div class="slide tema" id="s4">
-  <h2>¿Por qué INDICE+COINCIDIR supera a BUSCARV?</h2>
-  <div class="vs-box">
-    <div class="side left">
-      <h3 style="color:#e05050">BUSCARV — Limitado</h3>
-      <ul class="x-list">
-        <li>Busca solo hacia la derecha</li>
-        <li>La clave debe estar en columna 1</li>
-        <li>Si insertas columnas, el número cambia</li>
-        <li>Más lento en tablas grandes</li>
-        <li>No bidireccional</li>
-      </ul>
-    </div>
-    <div class="side right">
-      <h3 style="color:#1ab87a">INDICE+COINCIDIR — Profesional</h3>
-      <ul class="check-list">
-        <li>Busca en cualquier dirección</li>
-        <li>La clave puede estar en cualquier columna</li>
-        <li>Insertar columnas no rompe la fórmula</li>
-        <li>Más eficiente en tablas grandes</li>
-        <li>Búsqueda bidireccional (filas Y columnas)</li>
-      </ul>
-    </div>
-  </div>
-  <div class="callout warn">
-    <strong>Dato profesional:</strong> En entornos corporativos, los analistas de datos usan INDICE+COINCIDIR casi exclusivamente. BUSCARV es para aprendices. Pero primero debes dominar BUSCARV para entender INDICE+COINCIDIR.
-  </div>
-</div>
-
-<!-- SLIDE 5: EJEMPLO INDICE+COINCIDIR -->
-<div class="slide practica" id="s5">
-  <h2>INDICE+COINCIDIR — Ejemplo Empresa</h2>
-  <div class="cols">
-    <div>
-      <h3>Tabla de Empleados</h3>
-      <table>
-        <tr><th>Nombre</th><th>Cargo</th><th>Área</th><th>Salario</th></tr>
-        <tr><td>Ana Torres</td><td>Auxiliar Admin</td><td>Finanzas</td><td>$1.800.000</td></tr>
-        <tr><td>Juan Perez</td><td>Contador</td><td>Contab.</td><td>$2.500.000</td></tr>
-        <tr><td>María López</td><td>Jefe Logística</td><td>Logística</td><td>$3.200.000</td></tr>
-        <tr><td style="color:#a5d6ff">Pedro Ruiz</td><td>Aux. Contable</td><td>Contab.</td><td style="color:#1ab87a">$1.650.000</td></tr>
-      </table>
-      <p style="font-size:0.9em;color:#6fa8dc;margin-top:8px">¿Cuánto gana Pedro Ruiz? → busca nombre, devuelve salario</p>
-    </div>
-    <div>
-      <div class="code">
-        <span class="comment">Busca "Pedro Ruiz" en col A (nombres)</span><br>
-        <span class="comment">Devuelve lo que hay en col D (salario)</span><br><br>
-        <span class="fn">=INDICE(</span><span class="arg">D2:D5</span>,<br>
-        &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">"Pedro Ruiz"</span>,<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">A2:A5</span>,<span class="arg">0</span><span class="fn">))</span>
-      </div>
-      <div class="callout" style="margin-top:10px">
-        <strong>Resultado: $1.650.000</strong><br>
-        COINCIDIR encuentra que Pedro está en posición 4. INDICE va a la fila 4 del rango D2:D5.
-      </div>
-      <div class="callout green" style="margin-top:10px">
-        <strong>Ventaja:</strong> Aquí busqué por nombre (col A) y devolví salario (col D). Con BUSCARV no podría hacer esto si quisiera buscar por salario y devolver el nombre (al revés).
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 6: BÚSQUEDA BIDIRECCIONAL -->
-<div class="slide tema" id="s6">
-  <h2>Búsqueda Bidireccional — El Superpoder</h2>
-  <p>Puedo usar COINCIDIR en los dos argumentos de INDICE — para buscar tanto la fila como la columna dinámicamente.</p>
-  <div class="cols">
-    <div>
-      <h3>Tabla de Ventas por Mes y Producto</h3>
-      <table>
-        <tr><th></th><th>Enero</th><th>Febrero</th><th>Marzo</th></tr>
-        <tr><td>Laptops</td><td>45</td><td>52</td><td>38</td></tr>
-        <tr><td>Impresoras</td><td>28</td><td>31</td><td>41</td></tr>
-        <tr><td style="color:#a5d6ff">Escáneres</td><td>19</td><td style="color:#1ab87a">24 ←</td><td>22</td></tr>
-      </table>
-      <p style="font-size:0.9em;color:#6fa8dc;margin-top:8px">Quiero saber: ventas de <strong>Escáneres</strong> en <strong>Febrero</strong></p>
-    </div>
-    <div>
-      <div class="code">
-        <span class="comment">B1: "Escáneres", C1: "Febrero"</span><br><br>
-        <span class="fn">=INDICE(</span><span class="arg">B2:D4</span>,<br>
-        &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">B1</span>,<span class="arg">A2:A4</span>,<span class="arg">0</span><span class="fn">)</span>,<br>
-        &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">C1</span>,<span class="arg">B1:D1</span>,<span class="arg">0</span><span class="fn">)</span><span class="fn">)</span>
-      </div>
-      <div class="callout" style="margin-top:10px">
-        <strong>Resultado: 24</strong> — Si cambio B1 a "Laptops" y C1 a "Marzo", automáticamente devuelve 38. ¡Sin tocar la fórmula!
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 7: FUNCIONES CONDICIONALES - INTRO -->
-<div class="slide tema" id="s7">
-  <h2>Funciones Condicionales — Analizar con Condiciones</h2>
-  <p>¿Cuántas ventas fueron en Barranquilla? ¿Cuánto suma el área de Contabilidad? Las funciones SI te responden.</p>
-  <div class="cols3">
-    <div class="box">
-      <h3>🔢 CONTAR.SI</h3>
-      <p>Cuenta celdas que cumplen una condición</p>
-      <div class="code" style="font-size:0.88em">
-        =CONTAR.SI(rango, criterio)<br><br>
-        <span class="comment">¿Cuántos vendedores</span><br>
-        <span class="comment">son del área "Ventas"?</span>
-      </div>
-    </div>
-    <div class="box">
-      <h3>➕ SUMAR.SI</h3>
-      <p>Suma celdas que cumplen una condición</p>
-      <div class="code" style="font-size:0.88em">
-        =SUMAR.SI(rango, criterio, [suma_rango])<br><br>
-        <span class="comment">¿Cuánto suman las ventas</span><br>
-        <span class="comment">de Barranquilla?</span>
-      </div>
-    </div>
-    <div class="box">
-      <h3>📊 PROMEDIO.SI</h3>
-      <p>Promedia celdas que cumplen una condición</p>
-      <div class="code" style="font-size:0.88em">
-        =PROMEDIO.SI(rango, criterio, [prom_rango])<br><br>
-        <span class="comment">¿Cuál es el salario</span><br>
-        <span class="comment">promedio en Logística?</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 8: SUMAR.SI EJEMPLO -->
-<div class="slide practica" id="s8">
-  <h2>SUMAR.SI y SUMAR.SI.CONJUNTO — En la Empresa</h2>
-  <div class="cols">
-    <div>
-      <h3>Tabla de Gastos</h3>
-      <table>
-        <tr><th>Área</th><th>Ciudad</th><th>Gasto</th></tr>
-        <tr><td>Ventas</td><td>Barranquilla</td><td>$500.000</td></tr>
-        <tr><td>Admin</td><td>Bogotá</td><td>$800.000</td></tr>
-        <tr><td>Ventas</td><td>Barranquilla</td><td>$350.000</td></tr>
-        <tr><td>Logística</td><td>Barranquilla</td><td>$620.000</td></tr>
-        <tr><td>Ventas</td><td>Bogotá</td><td>$280.000</td></tr>
-      </table>
-    </div>
-    <div>
-      <div class="code">
-        <span class="comment">Total del área "Ventas":</span><br>
-        <span class="fn">=SUMAR.SI(</span><span class="arg">A:A</span>,<span class="str">"Ventas"</span>,<span class="arg">C:C</span><span class="fn">)</span><br>
-        <span class="comment">→ $500.000 + $350.000 + $280.000 = $1.130.000</span><br><br>
-        <span class="comment">Total Ventas en Barranquilla:</span><br>
-        <span class="fn">=SUMAR.SI.CONJUNTO(</span><br>
-        &nbsp;&nbsp;<span class="arg">C:C</span>,&nbsp;<span class="comment">← rango a sumar</span><br>
-        &nbsp;&nbsp;<span class="arg">A:A</span>,<span class="str">"Ventas"</span>,&nbsp;<span class="comment">← condición 1</span><br>
-        &nbsp;&nbsp;<span class="arg">B:B</span>,<span class="str">"Barranquilla"</span><span class="fn">)</span>&nbsp;<span class="comment">← condición 2</span><br>
-        <span class="comment">→ $500.000 + $350.000 = $850.000</span>
-      </div>
-      <div class="callout green">
-        <strong>SUMAR.SI.CONJUNTO</strong> permite hasta 127 condiciones simultáneas. Es el más usado en reportes empresariales.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 9: CONTAR.SI Y PROMEDIO.SI -->
-<div class="slide tema" id="s9">
-  <h2>CONTAR.SI y PROMEDIO.SI</h2>
-  <div class="cols">
-    <div>
-      <h3>CONTAR.SI — Ejemplos</h3>
-      <div class="code">
-        <span class="comment">¿Cuántos empleados son del área Admin?</span><br>
-        <span class="fn">=CONTAR.SI(</span><span class="arg">B:B</span>,<span class="str">"Admin"</span><span class="fn">)</span><br><br>
-        <span class="comment">¿Cuántos salarios superan $2.000.000?</span><br>
-        <span class="fn">=CONTAR.SI(</span><span class="arg">D:D</span>,<span class="str">"&gt;2000000"</span><span class="fn">)</span><br><br>
-        <span class="comment">¿Cuántas celdas NO están vacías?</span><br>
-        <span class="fn">=CONTAR.SI(</span><span class="arg">A:A</span>,<span class="str">"&lt;&gt;"</span><span class="fn">)</span>
-      </div>
-      <div class="callout" style="margin-top:10px"><strong>Operadores válidos:</strong> &gt; &lt; &gt;= &lt;= &lt;&gt; (diferente) y el asterisco * como comodín</div>
-    </div>
-    <div>
-      <h3>PROMEDIO.SI — Ejemplos</h3>
-      <div class="code">
-        <span class="comment">Salario promedio en Logística:</span><br>
-        <span class="fn">=PROMEDIO.SI(</span><br>
-        &nbsp;&nbsp;<span class="arg">B:B</span>,<span class="str">"Logística"</span>,<span class="arg">D:D</span><br>
-        <span class="fn">)</span><br><br>
-        <span class="comment">Promedio de ventas mayores a $1M:</span><br>
-        <span class="fn">=PROMEDIO.SI(</span><br>
-        &nbsp;&nbsp;<span class="arg">C:C</span>,<span class="str">"&gt;1000000"</span><br>
-        <span class="fn">)</span>
-      </div>
-      <div class="callout tip" style="margin-top:10px"><strong>Consejo:</strong> Usa celdas de referencia en lugar de escribir el criterio fijo. Así puedes cambiar la condición sin tocar la fórmula.</div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 10: ACTIVIDAD PRÁCTICA -->
-<div class="slide practica" id="s10">
-  <h2>Actividad Práctica — 55 min</h2>
-  <div class="callout tip"><strong>Caso ADMIN CARIBE S.A.S.:</strong> La empresa tiene empleados en 3 áreas y 2 ciudades. Debes crear un sistema de análisis de nómina.</div>
-  <div class="cols">
-    <div>
-      <h3>Construye esta base de datos (20 empleados):</h3>
-      <table>
-        <tr><th>Nombre</th><th>Área</th><th>Ciudad</th><th>Salario</th><th>Tipo</th></tr>
-        <tr><td>...</td><td>Admin/Ventas/Logíst.</td><td>Barranquilla/Bogotá</td><td>$X</td><td>Aux/Prof</td></tr>
-      </table>
-      <br>
-      <h3>Luego crea un panel de análisis:</h3>
-      <ul class="num-list">
-        <li>Total nómina por área (SUMAR.SI)</li>
-        <li>Número de empleados por ciudad (CONTAR.SI)</li>
-        <li>Salario promedio por área (PROMEDIO.SI)</li>
-        <li>Total nómina Barranquilla área Admin (SUMAR.SI.CONJUNTO)</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Parte 2 — INDICE+COINCIDIR:</h3>
-      <ul class="num-list">
-        <li>Crea una celda de búsqueda donde escribes el nombre del empleado</li>
-        <li>Con INDICE+COINCIDIR, trae automáticamente el área, ciudad y salario</li>
-        <li>Prueba buscando por área (busca en columna B) y que devuelva el nombre</li>
-      </ul>
-      <div class="callout warn" style="margin-top:16px">
-        <strong>Desafío:</strong> ¿Puedes buscar el empleado de mayor salario? Combina MAX() con COINCIDIR para encontrar su nombre.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 11: TABLA COMPARATIVA COMPLETA -->
-<div class="slide tema" id="s11">
-  <h2>Resumen: ¿Cuándo usar qué función?</h2>
-  <table>
-    <tr><th>Función</th><th>¿Para qué sirve?</th><th>Ejemplo empresa</th></tr>
-    <tr><td class="col-key">BUSCARV</td><td>Buscar en primera columna, ir a la derecha</td><td>Buscar precio de producto por código</td></tr>
-    <tr><td class="col-key">BUSCARH</td><td>Buscar en primera fila, ir hacia abajo</td><td>Ventas de enero en presupuesto mensual</td></tr>
-    <tr><td class="col-key">INDICE+COINCIDIR</td><td>Búsqueda flexible en cualquier dirección</td><td>Buscar salario por nombre, o nombre por cargo</td></tr>
-    <tr><td class="col-key">CONTAR.SI</td><td>Contar registros con condición</td><td>¿Cuántos clientes son de Barranquilla?</td></tr>
-    <tr><td class="col-key">SUMAR.SI</td><td>Sumar valores con una condición</td><td>Total ventas del área Comercial</td></tr>
-    <tr><td class="col-key">SUMAR.SI.CONJUNTO</td><td>Sumar con múltiples condiciones</td><td>Ventas de Juan en marzo en Barranquilla</td></tr>
-    <tr><td class="col-key">PROMEDIO.SI</td><td>Promedio con condición</td><td>Salario promedio de auxiliares administrativos</td></tr>
-  </table>
-</div>
-
-<!-- SLIDE 12: ERRORES COMUNES -->
-<div class="slide resumen" id="s12">
-  <h2>Errores a Evitar</h2>
-  <div class="cols">
-    <div>
-      <h3>En INDICE+COINCIDIR:</h3>
-      <ul class="x-list">
-        <li>Olvidar el 0 en COINCIDIR (coincidencia exacta)</li>
-        <li>No poner los rangos del mismo tamaño</li>
-        <li>Buscar en un rango con varias columnas en lugar de una sola</li>
-        <li>Olvidar cerrar los dos paréntesis al final</li>
-      </ul>
-      <br>
-      <div class="callout warn">
-        <strong>Truco:</strong> Para verificar COINCIDIR, primero escríbelo solo y verifica que devuelve el número de fila correcto. Si es correcto, mételo dentro de INDICE.
-      </div>
-    </div>
-    <div>
-      <h3>En funciones condicionales:</h3>
-      <ul class="x-list">
-        <li>No poner comillas en el criterio de texto: "Ventas"</li>
-        <li>En SUMAR.SI confundir el orden: (rango_criterio, criterio, rango_suma)</li>
-        <li>En SUMAR.SI.CONJUNTO el rango_suma va PRIMERO</li>
-        <li>Usar rangos de diferente tamaño</li>
-      </ul>
-      <br>
-      <div class="callout green">
-        <strong>Diferencia clave:</strong> SUMAR.SI: (rango_crit, crit, suma). SUMAR.SI.CONJUNTO: (suma, rango_crit1, crit1, ...). El orden cambia entre las dos funciones.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 13: CASO DE REFLEXIÓN -->
-<div class="slide tema" id="s13">
-  <h2>Caso ADMIN CARIBE — Para Analizar en Grupo</h2>
-  <div class="callout tip" style="margin-bottom:20px"><strong>Situación:</strong> ADMIN CARIBE S.A.S. acaba de ganar 8 nuevos clientes. El jefe pide un informe del estado actual de la cartera por ciudad y tipo de cliente — en 1 hora.</div>
-  <div class="cols">
-    <div>
-      <h3>Datos disponibles:</h3>
-      <ul>
-        <li>Base de datos de 200 clientes en Excel</li>
-        <li>Columnas: nombre, ciudad, tipo, saldo pendiente, días vencido</li>
-        <li>Sin fórmulas — solo datos crudos</li>
-      </ul>
-      <br>
-      <h3>Preguntas del grupo:</h3>
-      <ul class="num-list">
-        <li>¿Qué funciones usarías para el informe rápido?</li>
-        <li>¿Cómo organizarías el análisis en 60 minutos?</li>
-        <li>¿Qué información le presentarías al jefe?</li>
-      </ul>
-    </div>
-    <div>
-      <div class="box" style="margin-bottom:16px">
-        <h3>Propuesta de solución:</h3>
-        <ul class="check-list">
-          <li>CONTAR.SI por ciudad → cantidad de clientes</li>
-          <li>SUMAR.SI por ciudad → total cartera</li>
-          <li>SUMAR.SI.CONJUNTO por ciudad + vencidos &gt;30 días → cartera crítica</li>
-          <li>PROMEDIO.SI por tipo de cliente → promedio de deuda</li>
-          <li>INDICE+COINCIDIR para buscar un cliente específico rápido</li>
+        <ul class="check-list" style="margin-top:12px">
+          <li>Busca un valor en la <strong>primera columna</strong> de la tabla</li>
+          <li>Devuelve el valor de la <strong>columna N</strong> en esa misma fila</li>
+          <li>Siempre <code style="color:#ffa657">FALSO</code> como 4° argumento</li>
+          <li>Fijar tabla con <code style="color:#1ab87a">$</code></li>
         </ul>
       </div>
-      <div class="callout">
-        <strong>Esto es lo que hace la diferencia</strong> entre un auxiliar que entrega el informe en 1 hora vs. el que tarda 2 días sumando manualmente.
+    </div>
+    <div>
+      <div class="step">
+        <h3>Las limitaciones que encontramos:</h3>
+        <ul class="x-list">
+          <li>Solo busca en la <strong>primera columna</strong></li>
+          <li>Solo puede ir hacia la <strong>derecha</strong></li>
+          <li>Si insertas una columna, el número se <strong>descuadra</strong></li>
+          <li>No puede hacer búsqueda <strong>bidireccional</strong></li>
+        </ul>
+        <div class="callout warn" style="margin-top:14px">
+          <strong>Hoy:</strong> Aprenderemos INDICE+COINCIDIR — la combinación profesional que supera todas estas limitaciones.
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 14: RESUMEN Y TAREA -->
-<div class="slide resumen" id="s14">
+<!-- ════════════════════════ SLIDE 3: EL PROBLEMA ════════════════════════ -->
+<div class="slide aviso" id="s3">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>¿Cuándo BUSCARV no alcanza?</h2>
+
+  <div class="step">
+    <p>Imagina esta tabla de empleados:</p>
+    <table style="margin-bottom:0">
+      <tr><th>Nombre</th><th>Departamento</th><th>Ciudad</th><th>Salario</th></tr>
+      <tr><td>Ana Torres</td><td>Administración</td><td>Barranquilla</td><td>$1.850.000</td></tr>
+      <tr><td>Carlos Martínez</td><td>Ventas</td><td>Barranquilla</td><td>$2.900.000</td></tr>
+      <tr><td class="td-hl">Valeria Gómez</td><td>Gerencia</td><td>Barranquilla</td><td class="td-green">$5.800.000</td></tr>
+    </table>
+  </div>
+
+  <div class="cols" style="margin-top:16px">
+    <div class="step">
+      <div class="box red">
+        <h3 style="color:#e05050">Escenario 1 — BUSCARV falla:</h3>
+        <p style="font-size:.95em">Quiero buscar por <strong>Salario</strong> y obtener el <strong>Nombre</strong>.<br>
+        El salario está en la col D, el nombre en la col A.<br>
+        BUSCARV no puede ir hacia la <strong>izquierda</strong>. ✗</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="box green">
+        <h3 style="color:#1ab87a">Solución con INDICE+COINCIDIR:</h3>
+        <p style="font-size:.95em">INDICE+COINCIDIR puede buscar en <strong>cualquier columna</strong> y devolver datos de <strong>cualquier otra</strong>, sin importar el orden. ✓</p>
+        <p style="font-size:.9em;color:#1ab87a;margin-top:6px">Esta es la herramienta del analista profesional.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 4: COINCIDIR ════════════════════════ -->
+<div class="slide tema" id="s4">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>Función COINCIDIR — Encuentra la posición</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <div class="formula-hero">
+          <div class="fn-label">Función</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">COINCIDIR</span>(<span style="color:#a5d6ff">valor</span>, <span style="color:#ffa657">rango</span>, <span style="color:#1ab87a">0</span>)</div>
+        </div>
+        <p>Devuelve el <strong>número de fila</strong> donde está el valor dentro del rango. No devuelve el valor — devuelve <em>dónde</em> está.</p>
+      </div>
+      <div class="step">
+        <h3 style="margin-top:12px">Ejemplo:</h3>
+        <div class="code">
+          <span class="cmt">¿En qué posición está "Carlos Martínez"?</span><br>
+          <span class="fn">=COINCIDIR(</span><span class="str">"Carlos Martínez"</span>, <span class="arg">A2:A20</span>, <span class="hl">0</span><span class="fn">)</span><br><br>
+          <span class="cmt">→ Resultado: <span style="color:#1ab87a;font-style:normal">2</span>  (está en la posición 2)</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <table>
+          <tr><th>Posición</th><th>Nombre (A2:A5)</th></tr>
+          <tr><td style="color:#6a7688">1</td><td>Ana Torres</td></tr>
+          <tr><td class="td-green" style="font-weight:700">2 ←</td><td class="td-hl">Carlos Martínez</td></tr>
+          <tr><td style="color:#6a7688">3</td><td>María Rodríguez</td></tr>
+          <tr><td style="color:#6a7688">4</td><td>Juan García</td></tr>
+        </table>
+        <div class="callout warn" style="margin-top:10px">
+          <strong>El 0 es OBLIGATORIO.</strong> Siempre el tercer argumento = 0 (coincidencia exacta). Sin ese 0 la fórmula da resultados incorrectos.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 5: INDICE ════════════════════════ -->
+<div class="slide tema" id="s5">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>Función INDICE — Obtiene el valor en una posición</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <div class="formula-hero">
+          <div class="fn-label">Función</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">INDICE</span>(<span style="color:#ffa657">rango</span>, <span style="color:#1ab87a">número_fila</span>)</div>
+        </div>
+        <p>Le das un rango y un número de fila → te devuelve el <strong>valor</strong> que está en esa posición. Es como decirle: <em>"ve a la fila 3 de esta columna y trae lo que hay."</em></p>
+      </div>
+      <div class="step">
+        <h3 style="margin-top:12px">Ejemplo:</h3>
+        <div class="code">
+          <span class="cmt">Dame el valor de la fila 2 de la col. Salario</span><br>
+          <span class="fn">=INDICE(</span><span class="arg">D2:D20</span>, <span class="hl">2</span><span class="fn">)</span><br><br>
+          <span class="cmt">→ Resultado: <span style="color:#1ab87a;font-style:normal">$2.900.000</span></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <table>
+          <tr><th>Posición</th><th>Salario (D2:D5)</th></tr>
+          <tr><td style="color:#6a7688">1</td><td>$1.850.000</td></tr>
+          <tr><td class="td-green" style="font-weight:700">2 ←</td><td class="td-hl">$2.900.000</td></tr>
+          <tr><td style="color:#6a7688">3</td><td>$1.950.000</td></tr>
+          <tr><td style="color:#6a7688">4</td><td>$3.300.000</td></tr>
+        </table>
+        <div class="callout green" style="margin-top:10px">
+          <strong>Piénsalo así:</strong> INDICE es como un mesero. Le dices "tráeme el plato de la mesa número 2" y él lo trae. Tú necesitas saber el número de mesa (posición).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 6: LA COMBINACIÓN ════════════════════════ -->
+<div class="slide aviso" id="s6">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>La Combinación Perfecta</h2>
+
+  <div class="step">
+    <p>El secreto: <strong>COINCIDIR</strong> te da el número de posición que <strong>INDICE</strong> necesita.</p>
+    <div class="diagram">
+      <div class="box-d"><small style="color:#6a7688">Tú buscas</small><br><strong>"Carlos Martínez"</strong></div>
+      <div class="arrow">→</div>
+      <div class="box-d hl"><small>COINCIDIR</small><br><strong>Posición: 2</strong></div>
+      <div class="arrow">→</div>
+      <div class="box-d green"><small>INDICE (D2:D20, 2)</small><br><strong>$2.900.000</strong></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="big-formula">
+      <span style="color:#ff7b72">=INDICE(</span><span style="color:#ffa657">columna_resultado</span>,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff7b72">COINCIDIR(</span><span style="color:#a5d6ff">valor_buscado</span>,
+      <span style="color:#ffa657">columna_busqueda</span>,
+      <span style="color:#1ab87a">0</span><span style="color:#ff7b72">)</span><br>
+      <span style="color:#ff7b72">)</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="callout green">
+      <strong>¿Por qué es mejor que BUSCARV?</strong><br>
+      Con BUSCARV la búsqueda y el resultado siempre se definen por el número de columna (frágil). Con INDICE+COINCIDIR usas rangos nombrados — si insertas columnas, nada se rompe. Y puedes buscar en <em>cualquier</em> columna.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 7: PASO A PASO ════════════════════════ -->
+<div class="slide practica" id="s7">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>Construcción Paso a Paso — Ejemplo Completo</h2>
+
+  <div class="cols-60-40">
+    <div>
+      <div class="step">
+        <h3>Tabla fuente (Base_Empleados hoja A:F):</h3>
+        <table>
+          <tr><th>A — ID</th><th>B — Nombre</th><th>C — Depto</th><th>D — Ciudad</th><th>F — Salario</th></tr>
+          <tr><td>E001</td><td>Ana Torres</td><td>Admin.</td><td>Barranquilla</td><td>$1.850.000</td></tr>
+          <tr><td>E002</td><td class="td-hl">Carlos M.</td><td>Ventas</td><td>Barranquilla</td><td class="td-green">$2.900.000 ←</td></tr>
+          <tr><td>E003</td><td>María R.</td><td>Contab.</td><td>Barranquilla</td><td>$1.950.000</td></tr>
+        </table>
+      </div>
+      <div class="step">
+        <p style="margin-top:10px">Quiero: buscar <strong>"Carlos Martínez"</strong> por nombre (col B) y traer su <strong>salario</strong> (col F).</p>
+      </div>
+      <div class="step">
+        <div class="code" style="margin-top:8px">
+          <span class="cmt">Paso 1: ¿qué columna devuelve? → col F (salarios)</span><br>
+          <span class="cmt">Paso 2: ¿dónde busco? → col B (nombres)</span><br>
+          <span class="cmt">Paso 3: escribo:</span><br><br>
+          <span class="fn">=INDICE(</span><span class="arg">$F$3:$F$22</span>,<br>
+          &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">B25</span>, <span class="arg">$B$3:$B$22</span>, <span class="hl">0</span><span class="fn">))</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <div class="formula-hero" style="margin-top:24px">
+          <div class="fn-label">Resultado</div>
+          <div class="fn-result" style="font-size:1.5em">$2.900.000</div>
+        </div>
+        <div class="callout" style="margin-top:14px">
+          <strong>Truco:</strong> Antes de unirlas, prueba COINCIDIR sola. Si devuelve un número correcto, entonces INDICE funcionará bien.
+        </div>
+        <div class="callout warn" style="margin-top:10px">
+          <strong>Importante:</strong> Los dos rangos (F y B) deben tener exactamente el <strong>mismo tamaño</strong> — mismas filas.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 8: BÚSQUEDA INVERSA ════════════════════════ -->
+<div class="slide tema" id="s8">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>El Superpoder: Búsqueda en Cualquier Dirección</h2>
+
+  <div class="step">
+    <p>¿Y si quiero buscar por <strong>salario</strong> y obtener el <strong>nombre</strong>? Con BUSCARV es imposible (el ID siempre debe ser la primera columna). Con INDICE+COINCIDIR es trivial:</p>
+  </div>
+
+  <div class="cols" style="margin-top:10px">
+    <div>
+      <div class="step">
+        <div class="box red">
+          <h3 style="color:#e05050">BUSCARV — no puede:</h3>
+          <div class="code" style="font-size:.88em;margin-top:6px">
+            <span class="cmt">¿Quién gana $5.800.000?</span><br>
+            <span style="color:#e05050">=BUSCARV(5800000, A:F, ???, FALSO)</span><br>
+            <span class="cmt">¡Error! Salario está en col F,</span><br>
+            <span class="cmt">no en la primera columna.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <div class="box green">
+          <h3 style="color:#1ab87a">INDICE+COINCIDIR — sin problema:</h3>
+          <div class="code" style="font-size:.88em;margin-top:6px">
+            <span class="cmt">¿Quién gana $5.800.000?</span><br>
+            <span class="fn">=INDICE(</span><span class="arg">$B$3:$B$22</span>,<br>
+            &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">5800000</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">$F$3:$F$22</span>, <span class="hl">0</span><span class="fn">))</span><br>
+            <span class="cmt">→ "Valeria Gómez" ✓</span>
+          </div>
+        </div>
+        <div class="callout green" style="margin-top:10px">
+          <strong>La clave:</strong> En INDICE puse la columna de nombres (B). En COINCIDIR busqué en la columna de salarios (F). Puedo intercambiar cualquier columna.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 9: BIDIRECCIONAL ════════════════════════ -->
+<div class="slide tema" id="s9">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>Búsqueda Bidireccional — Fila Y Columna</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <h3>Tabla de ventas (2 dimensiones):</h3>
+        <table>
+          <tr><th>CIUDAD</th><th>Enero</th><th>Febrero</th><th>Marzo</th></tr>
+          <tr><td>Barranquilla</td><td>$42.5M</td><td class="td-hl">$45.8M ←</td><td>$48.2M</td></tr>
+          <tr><td>Bogotá</td><td>$61M</td><td>$65.3M</td><td>$68.5M</td></tr>
+          <tr><td>Cartagena</td><td>$24.1M</td><td>$26.8M</td><td>$28.9M</td></tr>
+        </table>
+        <p style="margin-top:10px">Quiero: ventas de <strong>Barranquilla</strong> en <strong>Febrero</strong>.</p>
+      </div>
+      <div class="step" style="margin-top:10px">
+        <div class="code">
+          <span class="cmt">Celda B14 = "Barranquilla", C14 = "Febrero"</span><br><br>
+          <span class="fn">=INDICE(</span><span class="arg">B3:D5</span>,<br>
+          &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">B14</span>, <span class="arg">A3:A5</span>, <span class="hl">0</span><span class="fn">)</span>,<br>
+          &nbsp;&nbsp;<span class="fn">COINCIDIR(</span><span class="str">C14</span>, <span class="arg">B2:D2</span>, <span class="hl">0</span><span class="fn">)</span><span class="fn">)</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <div class="diagram" style="flex-direction:column;align-items:flex-start;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="box-d hl" style="min-width:130px">COINCIDIR(fila)<br><small>Barranquilla = fila 1</small></div>
+            <div class="arrow">↘</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-left:40px">
+            <div class="box-d amber" style="min-width:130px">COINCIDIR(col)<br><small>Febrero = col 2</small></div>
+            <div class="arrow">↗</div>
+          </div>
+          <div style="margin-left:80px">
+            <div class="box-d green">INDICE(tabla, 1, 2)<br><strong>$45.800.000</strong></div>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:14px">
+          <strong>¡El truco!</strong> INDICE acepta 3 argumentos: (tabla, fila, columna). Si usas dos COINCIDIR, uno para fila y otro para columna, puedes localizar cualquier celda en una tabla 2D.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 10: COMPARACIÓN ════════════════════════ -->
+<div class="slide tema" id="s10">
+  <span class="section-chip chip-ic">INDICE + COINCIDIR</span>
+  <h2>BUSCARV vs INDICE+COINCIDIR — Resumen</h2>
+
+  <div class="vs-box" style="margin-top:10px">
+    <div class="side left">
+      <h3 style="color:#e05050">BUSCARV</h3>
+      <div class="step">
+        <ul class="x-list">
+          <li>La clave debe estar en la <strong>primera columna</strong></li>
+          <li>Solo puede buscar hacia la <strong>derecha</strong></li>
+          <li>El número de columna se <strong>rompe</strong> si insertas columnas</li>
+          <li>No puede hacer búsqueda en <strong>2 dimensiones</strong></li>
+          <li>Más lento en tablas grandes</li>
+        </ul>
+        <div class="callout red" style="margin-top:12px;font-size:.9em">
+          <strong>Úsalo cuando:</strong> la tabla es simple, la clave siempre está en la col 1, y no necesitas flexibilidad.
+        </div>
+      </div>
+    </div>
+    <div class="side right">
+      <h3 style="color:#1ab87a">INDICE + COINCIDIR</h3>
+      <div class="step">
+        <ul class="check-list">
+          <li>Busca en <strong>cualquier columna</strong> de la tabla</li>
+          <li>Puede ir hacia <strong>izquierda, derecha</strong> o cualquier dirección</li>
+          <li>Insertar columnas <strong>no rompe</strong> la fórmula</li>
+          <li>Búsqueda <strong>bidireccional</strong> (fila Y columna)</li>
+          <li>Más eficiente y robusto</li>
+        </ul>
+        <div class="callout green" style="margin-top:12px;font-size:.9em">
+          <strong>Úsalo siempre que:</strong> necesites flexibilidad, la tabla puede cambiar, o la búsqueda no es en la primera columna.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 11: INTRO CONDICIONALES ════════════════════════ -->
+<div class="slide aviso" id="s11">
+  <span class="section-chip chip-cond">Funciones Condicionales</span>
+  <h2>Funciones Condicionales — Analizar con Filtros</h2>
+
+  <div class="step">
+    <p>Tu jefe llega y pregunta: <em>"¿Cuánto suma la nómina del área de Ventas?"</em> y <em>"¿Cuántos empleados son de Barranquilla?"</em></p>
+    <p>Sin estas funciones, tendrías que filtrar manualmente y sumar a mano. Con ellas, en <strong>segundos</strong>.</p>
+  </div>
+
+  <div class="cols3" style="margin-top:14px">
+    <div class="step">
+      <div class="box teal">
+        <h3>🔢 CONTAR.SI</h3>
+        <p style="font-size:.9em">Cuenta cuántas celdas cumplen una condición</p>
+        <div class="code" style="font-size:.82em;margin-top:8px">
+          =CONTAR.SI(rango, condición)<br>
+          <span class="cmt">¿Cuántos de Barranquilla?</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="box green">
+        <h3>➕ SUMAR.SI</h3>
+        <p style="font-size:.9em">Suma valores que cumplen una condición</p>
+        <div class="code" style="font-size:.82em;margin-top:8px">
+          =SUMAR.SI(rango, cond, suma)<br>
+          <span class="cmt">¿Total nómina de Ventas?</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="box blue">
+        <h3>📊 PROMEDIO.SI</h3>
+        <p style="font-size:.9em">Promedia valores que cumplen una condición</p>
+        <div class="code" style="font-size:.82em;margin-top:8px">
+          =PROMEDIO.SI(rango, cond, prom)<br>
+          <span class="cmt">¿Salario prom. en Bogotá?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 12: CONTAR.SI ════════════════════════ -->
+<div class="slide tema" id="s12">
+  <span class="section-chip chip-cond">Funciones Condicionales</span>
+  <h2>CONTAR.SI — Cuenta con una condición</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <div class="formula-hero">
+          <div class="fn-label">Sintaxis</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">CONTAR.SI</span>(<span style="color:#ffa657">rango</span>, <span style="color:#a5d6ff">"condición"</span>)</div>
+        </div>
+        <p style="font-size:.95em">Solo tiene <strong>2 argumentos</strong>. No hay rango de suma — solo cuenta.</p>
+      </div>
+      <div class="step">
+        <h3 style="margin-top:12px">Ejemplos prácticos:</h3>
+        <div class="code" style="font-size:.9em">
+          <span class="cmt">¿Cuántos empleados son de Ventas?</span><br>
+          <span class="fn">=CONTAR.SI(</span><span class="arg">C:C</span>, <span class="str">"Ventas"</span><span class="fn">)</span><br><br>
+          <span class="cmt">¿Cuántos salarios superan $3.000.000?</span><br>
+          <span class="fn">=CONTAR.SI(</span><span class="arg">F:F</span>, <span class="str">"&gt;3000000"</span><span class="fn">)</span><br><br>
+          <span class="cmt">¿Cuántos empleados son "Senior"?</span><br>
+          <span class="fn">=CONTAR.SI(</span><span class="arg">E:E</span>, <span class="str">"Senior"</span><span class="fn">)</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>Operadores válidos como condición:</h3>
+        <table>
+          <tr><th>Operador</th><th>Significado</th><th>Ejemplo</th></tr>
+          <tr><td>"Ventas"</td><td>Igual a texto</td><td><code>"Ventas"</code></td></tr>
+          <tr><td>&gt;número</td><td>Mayor que</td><td><code>">3000000"</code></td></tr>
+          <tr><td>&lt;número</td><td>Menor que</td><td><code>"<2000000"</code></td></tr>
+          <tr><td>&lt;&gt;texto</td><td>Diferente de</td><td><code>"<>Bogotá"</code></td></tr>
+          <tr><td>*parcial*</td><td>Contiene texto</td><td><code>"*Senior*"</code></td></tr>
+        </table>
+        <div class="callout tip" style="margin-top:10px">
+          <strong>Pro tip:</strong> En lugar de escribir el texto fijo, usa una referencia de celda: <code>=CONTAR.SI(C:C, <span style="color:#1ab87a">G2</span>)</code>. Si cambias G2, el resultado se actualiza solo.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 13: SUMAR.SI ════════════════════════ -->
+<div class="slide tema" id="s13">
+  <span class="section-chip chip-cond">Funciones Condicionales</span>
+  <h2>SUMAR.SI — Suma con una condición</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <div class="formula-hero">
+          <div class="fn-label">Sintaxis</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">SUMAR.SI</span>(<span style="color:#ffa657">rango_crit</span>, <span style="color:#a5d6ff">"crit"</span>, <span style="color:#1ab87a">rango_suma</span>)</div>
+        </div>
+        <p style="font-size:.9em">3 argumentos: dónde buscar la condición, la condición, y qué sumar.</p>
+      </div>
+      <div class="step">
+        <div class="code" style="font-size:.9em;margin-top:10px">
+          <span class="cmt">Total nómina del depto. "Ventas":</span><br>
+          <span class="fn">=SUMAR.SI(</span><br>
+          &nbsp;&nbsp;<span class="arg">C:C</span>,&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">← donde está el depto.</span><br>
+          &nbsp;&nbsp;<span class="str">"Ventas"</span>,&nbsp;<span class="cmt">← la condición</span><br>
+          &nbsp;&nbsp;<span class="arg">F:F</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">← qué se suma (salarios)</span><br>
+          <span class="fn">)</span><br>
+          <span class="cmt">→ $12.150.000</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <div class="code" style="font-size:.9em">
+          <span class="cmt">Total salarios de Barranquilla:</span><br>
+          <span class="fn">=SUMAR.SI(</span><span class="arg">D:D</span>, <span class="str">"Barranquilla"</span>, <span class="arg">F:F</span><span class="fn">)</span><br><br>
+          <span class="cmt">Total bonos de empleados Senior:</span><br>
+          <span class="fn">=SUMAR.SI(</span><span class="arg">E:E</span>, <span class="str">"Senior"</span>, <span class="arg">G:G</span><span class="fn">)</span><br><br>
+          <span class="cmt">Total salarios mayores a $3M:</span><br>
+          <span class="fn">=SUMAR.SI(</span><span class="arg">F:F</span>, <span class="str">"&gt;3000000"</span><span class="fn">)</span><br>
+          <span class="cmt">(rango_suma omitido = mismo rango)</span>
+        </div>
+        <div class="callout amber" style="margin-top:10px">
+          <strong>Orden de argumentos:</strong><br>
+          SUMAR.SI: (<em>dónde está la condición</em>, condición, <em>qué sumo</em>)<br>
+          El rango suma va <strong>al final</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 14: PROMEDIO.SI ════════════════════════ -->
+<div class="slide tema" id="s14">
+  <span class="section-chip chip-cond">Funciones Condicionales</span>
+  <h2>PROMEDIO.SI — Promedio con una condición</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <div class="formula-hero">
+          <div class="fn-label">Sintaxis</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">PROMEDIO.SI</span>(<span style="color:#ffa657">rango_crit</span>, <span style="color:#a5d6ff">"crit"</span>, <span style="color:#6fa8dc">rango_prom</span>)</div>
+        </div>
+        <p style="font-size:.9em">Misma estructura que SUMAR.SI. Si omites el tercer argumento, promedia el mismo rango donde está la condición.</p>
+      </div>
+      <div class="step">
+        <div class="code" style="font-size:.9em;margin-top:10px">
+          <span class="cmt">Salario promedio en Barranquilla:</span><br>
+          <span class="fn">=PROMEDIO.SI(</span><span class="arg">D:D</span>, <span class="str">"Barranquilla"</span>, <span class="arg">F:F</span><span class="fn">)</span><br>
+          <span class="cmt">→ $3.138.462</span><br><br>
+          <span class="cmt">Salario promedio del depto. Ventas:</span><br>
+          <span class="fn">=PROMEDIO.SI(</span><span class="arg">C:C</span>, <span class="str">"Ventas"</span>, <span class="arg">F:F</span><span class="fn">)</span><br>
+          <span class="cmt">→ $2.430.000</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>¿Cuándo usarla en el trabajo?</h3>
+        <ul class="num-list">
+          <li>Comparar el salario promedio entre departamentos para detectar inequidades</li>
+          <li>Calcular el tiempo promedio de entrega por ciudad</li>
+          <li>Promedio de ventas de un vendedor específico</li>
+          <li>Ticket promedio de clientes de una categoría</li>
+        </ul>
+        <div class="callout tip" style="margin-top:12px">
+          <strong>Consejo:</strong> Combina PROMEDIO.SI con CONTAR.SI para ver cuántas muestras tienes antes de confiar en el promedio. Un promedio de 2 datos no es representativo.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 15: SUMAR.SI.CONJUNTO ════════════════════════ -->
+<div class="slide aviso" id="s15">
+  <span class="section-chip chip-cond">Funciones Condicionales</span>
+  <h2>SUMAR.SI.CONJUNTO — Múltiples Condiciones</h2>
+
+  <div class="step">
+    <p>¿Y si necesito: <em>"total nómina de empleados de <strong>Ventas</strong> que están en <strong>Barranquilla</strong>"</em>? SUMAR.SI solo acepta una condición. SUMAR.SI.CONJUNTO acepta hasta 127.</p>
+  </div>
+
+  <div class="cols" style="margin-top:10px">
+    <div>
+      <div class="step">
+        <div class="formula-hero" style="margin-bottom:12px">
+          <div class="fn-label">¡ATENCIÓN! El orden es diferente a SUMAR.SI</div>
+          <div class="fn-text"><span class="fn" style="color:#ff7b72">SUMAR.SI.CONJUNTO</span>(<br>
+            &nbsp;&nbsp;<span style="color:#1ab87a">rango_suma</span>,&nbsp;<span style="color:#6a7688">← PRIMERO</span><br>
+            &nbsp;&nbsp;<span style="color:#ffa657">rango_crit1</span>, <span style="color:#a5d6ff">"crit1"</span>,<br>
+            &nbsp;&nbsp;<span style="color:#ffa657">rango_crit2</span>, <span style="color:#a5d6ff">"crit2"</span><br>
+          )</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="code" style="font-size:.88em">
+          <span class="cmt">Nómina de Ventas en Barranquilla:</span><br>
+          <span class="fn">=SUMAR.SI.CONJUNTO(</span><br>
+          &nbsp;&nbsp;<span class="arg">F:F</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">← rango suma (salarios)</span><br>
+          &nbsp;&nbsp;<span class="arg">C:C</span>, <span class="str">"Ventas"</span>,&nbsp;<span class="cmt">← condición 1 (depto)</span><br>
+          &nbsp;&nbsp;<span class="arg">D:D</span>, <span class="str">"Barranquilla"</span><span class="fn">)</span>&nbsp;<span class="cmt">← condición 2 (ciudad)</span><br>
+          <span class="cmt">→ $8.500.000</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <div class="callout red">
+          <strong>Diferencia clave — no la olvides:</strong><br><br>
+          <span class="pill pill-r">SUMAR.SI</span> → (crit, crit, <strong>suma al final</strong>)<br><br>
+          <span class="pill pill-g">SUMAR.SI.CONJUNTO</span> → (<strong>suma al inicio</strong>, crit, crit)<br><br>
+          Este cambio de orden es el error más común.
+        </div>
+        <div class="callout amber" style="margin-top:10px">
+          <strong>También existe:</strong> CONTAR.SI.CONJUNTO y PROMEDIO.SI.CONJUNTO con la misma lógica de múltiples condiciones.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 16: ERRORES COMUNES ════════════════════════ -->
+<div class="slide resumen" id="s16">
+  <h2>Errores Comunes — Aprende a Evitarlos</h2>
+
+  <div class="cols">
+    <div>
+      <div class="step">
+        <h3>En INDICE + COINCIDIR:</h3>
+        <ul class="x-list">
+          <li>Olvidar el <code style="color:#ffa657">0</code> en COINCIDIR → resultados incorrectos</li>
+          <li>Los rangos de INDICE y COINCIDIR no tienen el <strong>mismo tamaño</strong></li>
+          <li>Poner un rango de <strong>varias columnas</strong> en COINCIDIR (debe ser una sola)</li>
+          <li>Olvidar <strong>cerrar dos paréntesis</strong> al final: <code>))</code></li>
+          <li>No usar <code style="color:#1ab87a">$</code> para fijar rangos al copiar</li>
+        </ul>
+        <div class="callout tip" style="margin-top:12px">
+          <strong>Diagnóstico:</strong> Primero escribe solo COINCIDIR. Si devuelve un número correcto, entonces INDICE funcionará.
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>En funciones condicionales:</h3>
+        <ul class="x-list">
+          <li>No poner comillas en el criterio de texto: <code>"Ventas"</code></li>
+          <li>Confundir el orden de argumentos en SUMAR.SI.CONJUNTO</li>
+          <li>Rangos de diferente <strong>tamaño</strong> en la misma fórmula</li>
+          <li>No incluir operadores como texto: <code>">3000000"</code></li>
+        </ul>
+        <div class="callout red" style="margin-top:12px">
+          <strong>Recuerda siempre:</strong><br>
+          SUMAR.SI: suma va <strong>al final</strong><br>
+          SUMAR.SI.CONJUNTO: suma va <strong>al inicio</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 17: TABLA RESUMEN ════════════════════════ -->
+<div class="slide tema" id="s17">
+  <h2>¿Cuándo usar qué función? — Tabla de Referencia</h2>
+  <table style="margin-top:6px">
+    <tr><th>Función</th><th>¿Para qué sirve?</th><th>Cuándo usarla</th></tr>
+    <tr><td class="col-key">BUSCARV / BUSCARH</td><td>Búsqueda básica por clave</td><td>Tabla simple, clave en primera columna/fila</td></tr>
+    <tr><td class="col-key">INDICE + COINCIDIR</td><td>Búsqueda flexible, cualquier dirección</td><td>Cuando BUSCARV no alcanza, uso profesional</td></tr>
+    <tr><td class="col-key">COINCIDIR bidirec.</td><td>Dos COINCIDIR dentro de INDICE</td><td>Tablas cruzadas (fila × columna)</td></tr>
+    <tr><td class="col-key">CONTAR.SI</td><td>Contar registros con condición</td><td>¿Cuántos clientes de Bogotá?</td></tr>
+    <tr><td class="col-key">SUMAR.SI</td><td>Sumar valores con una condición</td><td>Total ventas del área Comercial</td></tr>
+    <tr><td class="col-key">SUMAR.SI.CONJUNTO</td><td>Sumar con múltiples condiciones</td><td>Ventas de área X en ciudad Y</td></tr>
+    <tr><td class="col-key">PROMEDIO.SI</td><td>Promedio con condición</td><td>Salario promedio por departamento</td></tr>
+  </table>
+  <div class="callout" style="margin-top:16px">
+    <strong>Regla general:</strong> Si la pregunta dice "¿cuánto?", "¿cuántos?" o "¿cuál es el promedio?" + "de/en [categoría]" → tienes una función condicional. Si dice "busca [valor] y dime [otro dato]" → tienes INDICE+COINCIDIR.
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 18: ACTIVIDAD 1 ════════════════════════ -->
+<div class="slide practica" id="s18">
+  <span class="section-chip chip-practica">Actividad Práctica</span>
+  <h2>Actividad 1 — INDICE + COINCIDIR (25 min)</h2>
+  <div class="callout tip"><strong>Archivo:</strong> actividad_01_INDICE_COINCIDIR.xlsx</div>
+  <div class="cols" style="margin-top:12px">
+    <div>
+      <div class="step">
+        <h3>Parte A — Paso a paso:</h3>
+        <ul class="num-list">
+          <li><strong>Hoja PASO_1_COINCIDIR:</strong> Encuentra la posición de 4 empleados en la lista usando solo COINCIDIR</li>
+          <li><strong>Hoja PASO_2_INDICE:</strong> Dado un número de fila, trae el dato correspondiente usando solo INDICE</li>
+          <li><strong>Hoja PASO_3_COMBINADAS:</strong> Completa el panel de búsqueda — escribe el nombre, llega el salario, departamento y ciudad automáticamente</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>Parte B — Reto bidireccional:</h3>
+        <ul class="num-list">
+          <li><strong>Hoja RETO_Bidireccional:</strong> Con la tabla de ventas por ciudad y mes, responde 3 preguntas usando INDICE con dos COINCIDIR</li>
+        </ul>
+        <div class="callout warn" style="margin-top:16px">
+          <strong>Pista si te trabas:</strong> Escribe primero COINCIDIR(valor, rango, 0) solo en una celda y verifica que el número sea correcto. Luego mételo dentro de INDICE.
+        </div>
+        <div class="callout green" style="margin-top:8px">
+          <strong>Entrega:</strong> Actividad1_IC_TuNombre.xlsx
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 19: ACTIVIDAD 2 ════════════════════════ -->
+<div class="slide practica" id="s19">
+  <span class="section-chip chip-practica">Actividad Práctica</span>
+  <h2>Actividad 2 — Funciones Condicionales (30 min)</h2>
+  <div class="callout tip"><strong>Archivo:</strong> actividad_02_Funciones_Condicionales.xlsx</div>
+  <div class="cols" style="margin-top:12px">
+    <div>
+      <div class="step">
+        <h3>Análisis de nómina — ADMIN CARIBE S.A.S.:</h3>
+        <ul class="num-list">
+          <li><strong>Hoja SUMAR_SI:</strong> 5 preguntas de suma (2 resueltas como ejemplo, 5 para ti)</li>
+          <li><strong>Hoja CONTAR_SI:</strong> 5 preguntas de conteo (2 resueltas como ejemplo)</li>
+          <li><strong>Hoja PROMEDIO_SI:</strong> 4 preguntas de promedio (2 resueltas)</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>Reto final — múltiples condiciones:</h3>
+        <ul class="num-list">
+          <li><strong>Hoja RETO_CONJUNTO:</strong> Usa SUMAR.SI.CONJUNTO para responder 4 preguntas que requieren 2 condiciones simultáneas</li>
+        </ul>
+        <div class="callout red" style="margin-top:14px">
+          <strong>Recuerda el truco:</strong> SUMAR.SI.CONJUNTO pone el rango de suma AL INICIO. Es diferente a SUMAR.SI.
+        </div>
+        <div class="callout green" style="margin-top:8px">
+          <strong>Entrega:</strong> Actividad2_Condicionales_TuNombre.xlsx
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 20: TAREA PARA CASA ════════════════════════ -->
+<div class="slide resumen" id="s20">
+  <span class="section-chip chip-practica">Tarea para Casa</span>
+  <h2>Tarea — Presupuesto Familiar con Excel</h2>
+  <div class="callout tip"><strong>Archivo:</strong> tarea_casa_Vida_Real.xlsx</div>
+
+  <div class="cols" style="margin-top:12px">
+    <div>
+      <div class="step">
+        <h3>Situación:</h3>
+        <p style="font-size:.95em">Eres el administrador del presupuesto de tu hogar en junio 2025. Tienes 35 registros de gastos del mes y un catálogo del supermercado.</p>
+        <h3 style="margin-top:14px">Parte A — Lista de compras:</h3>
+        <ul class="check-list">
+          <li>Usa INDICE+COINCIDIR para buscar precios en el catálogo del supermercado</li>
+          <li>Calcula el subtotal de cada producto</li>
+          <li>Obtén el total de tu compra</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="step">
+        <h3>Parte B — Análisis del presupuesto:</h3>
+        <ul class="check-list">
+          <li>SUMAR.SI: total gastado por categoría (Alimentación, Transporte, etc.)</li>
+          <li>CONTAR.SI: número de transacciones por categoría</li>
+          <li>PROMEDIO.SI: gasto promedio por transacción</li>
+          <li>Responde 3 preguntas de reflexión sobre tus finanzas</li>
+        </ul>
+        <div class="callout green" style="margin-top:14px">
+          <strong>Objetivo real:</strong> Estas fórmulas que usas en el trabajo sirven exactamente igual para administrar tu dinero en casa. El Excel no distingue entre nóminas empresariales y presupuestos familiares.
+        </div>
+        <div class="callout amber" style="margin-top:8px">
+          <strong>Entrega:</strong> Tarea_D2_TuNombre.xlsx — próxima clase
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ SLIDE 21: CIERRE ════════════════════════ -->
+<div class="slide resumen" id="s21">
   <h2>Resumen del Día 2</h2>
   <div class="cols">
     <div>
       <h3>Lo aprendido hoy:</h3>
       <ul class="check-list">
-        <li>INDICE: devuelve valor por posición fila/columna</li>
-        <li>COINCIDIR: encuentra la posición de un valor</li>
-        <li>INDICE+COINCIDIR: búsqueda bidireccional completa</li>
-        <li>SUMAR.SI y SUMAR.SI.CONJUNTO</li>
-        <li>CONTAR.SI para conteos condicionales</li>
-        <li>PROMEDIO.SI para análisis por categoría</li>
+        <li>COINCIDIR devuelve la <strong>posición</strong> de un valor en un rango</li>
+        <li>INDICE devuelve el <strong>valor</strong> en una posición dada</li>
+        <li>INDICE+COINCIDIR = búsqueda en <strong>cualquier dirección</strong></li>
+        <li>Dos COINCIDIR = búsqueda <strong>bidireccional</strong> (fila + columna)</li>
+        <li>CONTAR.SI, SUMAR.SI, PROMEDIO.SI = análisis <strong>por categoría</strong></li>
+        <li>SUMAR.SI.CONJUNTO = análisis con <strong>múltiples condiciones</strong></li>
       </ul>
     </div>
     <div>
-      <h3>Tarea para la próxima clase:</h3>
-      <div class="box yellow">
-        <ul>
-          <li>Termina el ejercicio de nómina</li>
-          <li>Practica el INDICE+COINCIDIR con diferentes columnas</li>
-          <li>Busca en internet: "diferencia BUSCARV vs INDICE COINCIDIR"</li>
-          <li>Piensa: ¿en qué reporte de tu empresa usarías estas funciones?</li>
+      <div class="box amber">
+        <h3>Próximo Día 3:</h3>
+        <ul style="margin-top:8px">
+          <li>Funciones Financieras: PAGO, TASA, VA, VF</li>
+          <li>Funciones de Texto: CONCATENAR, IZQUIERDA, EXTRAE</li>
+          <li>Fórmulas Matriciales: primer vistazo</li>
         </ul>
       </div>
-      <div class="callout" style="margin-top:14px">
-        <strong>Próximo Día 3:</strong> Funciones Financieras (PAGO, TASA, VA, VF) + Funciones de Texto + Fórmulas Matriciales. Cierre de Excel Avanzado Parte 1.
+      <div class="callout green" style="margin-top:14px">
+        <strong>Recuerda:</strong> La diferencia entre un auxiliar administrativo y un analista profesional no está en conocer más datos — está en poder responder preguntas del jefe en segundos, no en horas. Estas fórmulas son esa diferencia.
       </div>
     </div>
   </div>
 </div>
 
+<!-- ════════════════════════ UI FIJA ════════════════════════ -->
 <div class="progress"><div class="progress-bar" id="pb"></div></div>
-<div class="slide-counter" id="sc">1 / 14</div>
-<div class="nav-info">← → para navegar</div>
+<div class="slide-counter" id="sc">1 / 21</div>
+<div class="nav-info">← → avanzar · Inicio/Fin · N notas</div>
+<div id="steps-hint">Espacio para revelar</div>
+<div class="section-label" id="section-lbl"></div>
 
 <script>
-const slides=document.querySelectorAll('.slide');const total=slides.length;let cur=0;
-function show(n){slides[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');document.getElementById('pb').style.width=((cur+1)/total*100)+'%';document.getElementById('sc').textContent=(cur+1)+' / '+total;}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);});
-document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)show(cur+1);else show(cur-1);});
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const sections = {
+  0: 'Portada',
+  1: 'Repaso Día 1',
+  2: 'INDICE+COINCIDIR',
+  3: 'INDICE+COINCIDIR',
+  4: 'INDICE+COINCIDIR',
+  5: 'INDICE+COINCIDIR',
+  6: 'INDICE+COINCIDIR',
+  7: 'INDICE+COINCIDIR',
+  8: 'INDICE+COINCIDIR',
+  9: 'BUSCARV vs IC',
+  10: 'Func. Condicionales',
+  11: 'Func. Condicionales',
+  12: 'Func. Condicionales',
+  13: 'Func. Condicionales',
+  14: 'Func. Condicionales',
+  15: 'Errores',
+  16: 'Resumen',
+  17: 'Actividad 1',
+  18: 'Actividad 2',
+  19: 'Tarea Casa',
+  20: 'Cierre',
+};
+
+function getSteps(slideEl){return slideEl.querySelectorAll('.step')}
+function countVisible(slideEl){return slideEl.querySelectorAll('.step.visible').length}
+function totalSteps(slideEl){return getSteps(slideEl).length}
+
+function showNextStep(){
+  const el = slides[cur];
+  const steps = getSteps(el);
+  const vis = countVisible(el);
+  if(vis < steps.length){
+    steps[vis].classList.add('visible');
+    updateStepHint();
+    return true;
+  }
+  return false;
+}
+
+function hideAllSteps(el){
+  el.querySelectorAll('.step.visible').forEach(s=>s.classList.remove('visible'));
+}
+function showAllSteps(el){
+  el.querySelectorAll('.step').forEach(s=>s.classList.add('visible'));
+}
+
+function updateCounter(){
+  document.getElementById('sc').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('pb').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('section-lbl').textContent = sections[cur] || '';
+}
+
+function updateStepHint(){
+  const el = slides[cur];
+  const t = totalSteps(el);
+  const v = countVisible(el);
+  const hint = document.getElementById('steps-hint');
+  if(t === 0){
+    hint.textContent = '→ siguiente';
+    hint.className = '';
+  } else if(v < t){
+    hint.textContent = 'Espacio → revelar (' + (t-v) + ' restantes)';
+    hint.className = 'has-steps';
+  } else {
+    hint.textContent = '→ siguiente diapositiva';
+    hint.className = '';
+  }
+}
+
+function show(n){
+  if(n < 0 || n >= total) return;
+  slides[cur].classList.remove('active');
+  cur = n;
+  slides[cur].classList.add('active');
+  // Auto-show if slide has no steps
+  if(totalSteps(slides[cur]) === 0){
+    // nothing to reveal
+  }
+  updateCounter();
+  updateStepHint();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){
+    e.preventDefault();
+    if(!showNextStep()) show(cur+1);
+  }
+  if(e.key==='ArrowLeft' || e.key==='PageUp'){
+    e.preventDefault();
+    const el = slides[cur];
+    const vis = countVisible(el);
+    if(vis > 0){
+      getSteps(el)[vis-1].classList.remove('visible');
+      updateStepHint();
+    } else {
+      if(cur > 0){
+        show(cur-1);
+        showAllSteps(slides[cur]);
+      }
+    }
+  }
+  if(e.key==='Home') show(0);
+  if(e.key==='End'){ show(total-1); showAllSteps(slides[cur]); }
+  if(e.key==='f' || e.key==='F'){ document.documentElement.requestFullscreen?.(); }
+});
+
+// Click navigation — right half = next, left half = prev step or prev slide
+document.addEventListener('click', e=>{
+  const half = window.innerWidth / 2;
+  if(e.clientX > half){
+    if(!showNextStep()) show(cur+1);
+  } else {
+    const el = slides[cur];
+    const vis = countVisible(el);
+    if(vis > 0){
+      getSteps(el)[vis-1].classList.remove('visible');
+      updateStepHint();
+    } else {
+      show(cur-1);
+    }
+  }
+});
+
+// Init
 show(0);
 </script>
 </body>
